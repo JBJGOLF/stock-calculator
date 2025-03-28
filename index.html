@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주식 수익률 계산기</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 주식 수익률 계산기 시작 -->
+    <div id="stockCalc">
+        <!-- 헤더 영역 -->
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <div class="header-title">주식 수익률 계산기</div>
+                    <p style="color: #ffffff;">투자 수익률을 간단하게 계산하고 미래 수익을 예측해보세요!</p>
+                </div>
+                <div class="header-icon">
+                    📈
+                </div>
+            </div>
+            
+            <!-- 차트 애니메이션 -->
+            <div class="chart-container">
+                <div class="chart-animation"></div>
+            </div>
+            
+            <!-- 사용 가이드 -->
+            <div class="usage-guide">
+                <div class="guide-title"ℹ️ 사용 가이드</div>
+                <div class="guide-item">
+                    <span class="guide-icon">📌</span>
+                    <span class="guide-text">증권 종류를 선택합니다 (코스피/코스닥)</span>
+                </div>
+                <div class="guide-item">
+                    <span class="guide-icon">📌</span>
+                    <span class="guide-text">평균 매수가와 보유량을 입력합니다</span>
+                </div>
+                <div class="guide-item">
+                    <span class="guide-icon">📌</span>
+                    <span class="guide-text">현재가를 입력합니다</span>
+                </div>
+                <div class="guide-item">
+                    <span class="guide-icon">📌</span>
+                    <span class="guide-text">증권사를 선택하거나 수수료율을 직접 입력합니다</span>
+                </div>
+                <div class="guide-item">
+                    <span class="guide-icon">📌</span>
+                    <span class="guide-text">계산하기 버튼을 눌러 수익률을 확인합니다</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 계산기 폼 -->
+        <div class="calculator-form" id="calculatorForm">
+            <div class="form-tabs">
+                <div class="form-tab active" data-tab="calculator">계산기</div>
+                <div class="form-tab" data-tab="fee-info">증권사별 수수료</div>
+            </div>
+            
+            <div class="tab-content active" id="calculator">
+                <div class="input-group">
+                    <label for="marketType" class="input-label">증권 종류</label>
+                    <select id="marketType" class="input-field">
+                        <option value="kospi">코스피</option>
+                        <option value="kosdaq">코스닥</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="avgBuyPrice" class="input-label">
+                        평균 매수가 (원)
+                        <span class="tooltip">
+                            ❓
+                            <span class="tooltip-text">주식을 매수했던 평균 가격을 입력하세요</span>
+                        </span>
+                    </label>
+                    <input type="text" id="avgBuyPrice" class="input-field" placeholder="예: 50,000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="stockQuantity" class="input-label">
+                        주식 보유량 (주)
+                        <span class="tooltip">
+                            ❓
+                            <span class="tooltip-text">보유중인 주식의 수량을 입력하세요</span>
+                        </span>
+                    </label>
+                    <input type="text" id="stockQuantity" class="input-field" placeholder="예: 100">
+                </div>
+                
+                <div class="input-group">
+                    <label for="currentPrice" class="input-label">
+                        주식 현재가 (원)
+                        <span class="tooltip">
+                            ❓
+                            <span class="tooltip-text">현재 주식의 시장 가격을 입력하세요</span>
+                        </span>
+                    </label>
+                    <input type="text" id="currentPrice" class="input-field" placeholder="예: 55,000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="brokerSelect" class="input-label">
+                        증권사 선택
+                        <span class="tooltip">
+                            ❓
+                            <span class="tooltip-text">거래에 사용하는 증권사를 선택하면 해당 수수료가 자동 적용됩니다.</span>
+                        </span>
+                    </label>
+                    <select id="brokerSelect" class="input-field">
+                        <option value="direct">직접 입력</option>
+                        <option value="0.01">NH투자증권 (나무증권) - 0.01%</option>
+                        <option value="0.014">한국투자증권 - 0.014%</option>
+                        <option value="0.014">신한투자증권 - 0.014%</option>
+                        <option value="0.014">대신증권 - 0.014%</option>
+                        <option value="0.015">키움증권 - 0.015%</option>
+                        <option value="0.015">미래에셋증권 - 0.015%</option>
+                        <option value="0.015">KB증권 - 0.015%</option>
+                        <option value="0.015">유안타증권 - 0.015%</option>
+                        <option value="0.015">하이투자증권 - 0.015%</option>
+                        <option value="0.015">토스증권 - 0.015%</option>
+                        <option value="0.015">카카오페이증권 - 0.015%</option>
+                        <option value="0.147">삼성증권 - 0.147%</option>
+                    </select>
+                </div>
+                
+                <div class="input-group" id="customCommissionGroup">
+                    <label for="commission" class="input-label">
+                        수수료 직접 입력 (%)
+                        <span class="tooltip">
+                            ❓
+                            <span class="tooltip-text">거래시 적용되는 수수료율을 직접 입력하세요. 일반적으로 0.015~0.35% 범위입니다.</span>
+                        </span>
+                    </label>
+                    <input type="number" id="commission" class="input-field" step="0.001" placeholder="예: 0.015">
+                </div>
+                
+                <div class="ad-container">
+                    <!-- 광고 코드 -->
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3623373746600436" crossorigin="anonymous"></script>
+                    <!-- [골프투어] 최상단 -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-3623373746600436"
+                         data-ad-slot="6967081954"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+                
+                <button class="calculate-btn" id="calculateBtn">
+                    🧮 계산하기
+                </button>
+            </div>
+            
+            <!-- 수수료 정보 탭 -->
+            <div class="tab-content" id="fee-info">
+                <div style="font-weight: 600; margin-bottom: 15px; font-size: 18px;">
+                    🏦 국내 주요 증권사 수수료율 (2025년 기준)
+                </div>
+                
+                <div class="fees-container">
+                    <table class="fees-table">
+                        <thead>
+                            <tr>
+                                <th>증권사</th>
+                                <th>수수료율</th>
+                                <th>그룹</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>NH투자증권 (나무증권)</td>
+                                <td><span class="fee-rate">0.01%</span></td>
+                                <td>최저</td>
+                            </tr>
+                            <tr>
+                                <td>한국투자증권</td>
+                                <td><span class="fee-rate">0.014%</span></td>
+                                <td>저수수료</td>
+                            </tr>
+                            <tr>
+                                <td>신한투자증권</td>
+                                <td><span class="fee-rate">0.014%</span></td>
+                                <td>저수수료</td>
+                            </tr>
+                            <tr>
+                                <td>대신증권</td>
+                                <td><span class="fee-rate">0.014%</span></td>
+                                <td>저수수료</td>
+                            </tr>
+                            <tr>
+                                <td>키움증권</td>
+                                <td><span class="fee-rate">0.015%</span></td>
+                                <td>표준</td>
+                            </tr>
+                            <tr>
+                                <td>미래에셋증권</td>
+                                <td><span class="fee-rate">0.015%</span></td>
+                                <td>표준</td>
+                            </tr>
+                            <tr>
+                                <td>KB증권</td>
+                                <td><span class="fee-rate">0.015%</span></td>
+                                <td>표준</td>
+                            </tr>
+                            <tr>
+                                <td>유안타증권</td>
+                                <td><span class="fee-rate">0.015%</span></td>
+                                <td>표준</td>
+                            </tr>
+                            <tr>
+                                <td>하이투자증권</td>
+                                <td><span class="fee-rate">0.015%</span></td>
+                                <td>표준</td>
+                            </tr>
+                            <tr>
+                                <td>토스증권</td>
+                                <td><span class="fee-rate">0.015%</span></td>
+                                <td>표준</td>
+                            </tr>
+                            <tr>
+                                <td>카카오페이증권</td>
+                                <td><span class="fee-rate">0.015%</span></td>
+                                <td>표준</td>
+                            </tr>
+                            <tr>
+                                <td>삼성증권</td>
+                                <td><span class="fee-rate">0.147%</span></td>
+                                <td>고수수료</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="font-size: 14px; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 10px;">
+                    ℹ️ 위 수수료율은 온라인 거래(HTS/MTS) 기준이며, 이벤트 우대 제외 기본값입니다. 정확한 수치는 각 증권사 홈페이지를 확인하세요.
+                </div>
+            </div>
+        </div>
+        
+        <!-- 결과 영역 -->
+        <div class="result-container" id="resultContainer">
+            <div class="result-title">
+                📊 주식 수익률 계산 결과
+            </div>
+            
+            <div class="result-item">
+                <div class="result-label">매수 금액</div>
+                <div class="result-value" id="buyAmount">0 원</div>
+            </div>
+            
+            <div class="result-item">
+                <div class="result-label">매도 금액</div>
+                <div class="result-value" id="sellAmount">0 원</div>
+            </div>
+            
+            <div class="result-item">
+                <div class="result-label">수익률</div>
+                <div class="result-value" id="profitRate">0.00 %</div>
+            </div>
+            
+            <div class="result-item">
+                <div class="result-label">수익 금액</div>
+                <div class="result-value" id="profitAmount">0 원</div>
+            </div>
+            
+            <div class="ad-container">
+                <!-- 광고 코드 -->
+                <script src="https://ads-partners.coupang.com/g.js"></script>
+                <script>
+                    new PartnersCoupang.G({"id":764221,"template":"carousel","trackingCode":"AF7962515","width":"100%","height":"300","tsource":""});
+                </script>
+            </div>
+            
+            <button class="recalculate-btn" id="recalculateBtn">
+                🔄 다시 계산하기
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
