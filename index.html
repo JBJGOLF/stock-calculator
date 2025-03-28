@@ -1,322 +1,383 @@
-<!-- 주식 수익률 계산기 -->
-<div id="sc-box" style="max-width: 100%; margin: 20px auto; font-family: sans-serif; background: linear-gradient(145deg,#e8e8e8,#f5f5f5); border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.15),inset 0 1px 1px rgba(255,255,255,0.6); border: 1px solid #d1d1d1;">
-<div style="text-align: center; margin-bottom: 15px;">
-<p style="font-size: 32px; margin: 0 0 10px; color: #4a4a4a; text-shadow: 0 1px 1px rgba(255,255,255,0.5);"><span style="font-size: 22px; font-weight: 600;">주식 수익률 계산기 📈</span></p>
-</div>
-
-<div style="background: linear-gradient(to bottom,#fff,#f9f9f9); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #d1d1d1; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
-    <div style="margin-bottom: 12px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">📊 증권 종류</label>
-        <select id="sc-market-type" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
-            <option value="kospi">코스피</option>
-            <option value="kosdaq">코스닥</option>
-        </select>
-    </div>
-    
-    <div style="margin-bottom: 12px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">💰 평균 매수가</label>
-        <div style="position: relative;">
-            <input id="sc-buy-price" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" type="text" placeholder="평균 매수가 입력" />
-            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">원</span>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주식 수익률 계산기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        #sc-box {
+            width: 100%;
+            max-width: 480px;
+            background: linear-gradient(145deg, #d4af37, #b98c2a);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 15px 30px rgba(0,0,0,0.2), 
+                inset 0 -5px 10px rgba(255,255,255,0.1),
+                inset 0 5px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .embossed-text {
+            text-shadow: 
+                -1px -1px 0 rgba(0,0,0,0.2), 
+                 1px 1px 0 rgba(255,255,255,0.3);
+            color: #4a4a4a;
+        }
+        .input-container {
+            background: linear-gradient(145deg, #c4a032, #a98c2a);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 
+                inset 0 -3px 6px rgba(0,0,0,0.1), 
+                inset 0 3px 6px rgba(255,255,255,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #f0e68c;
+            text-shadow: 
+                -1px -1px 0 rgba(0,0,0,0.3), 
+                 1px 1px 0 rgba(255,255,255,0.2);
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #e0c040, #c0a030);
+            color: #4a4a4a;
+            font-size: 16px;
+            box-shadow: 
+                inset 0 -3px 6px rgba(0,0,0,0.2), 
+                inset 0 3px 6px rgba(255,255,255,0.1);
+            text-align: right;
+        }
+        select option {
+            background: #f0e68c;
+            color: #4a4a4a;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 
+                -1px -1px 0 rgba(0,0,0,0.3), 
+                 1px 1px 0 rgba(255,255,255,0.2);
+        }
+        #sc-calc-btn {
+            background: linear-gradient(145deg, #4a4a4a, #2a2a2a);
+            color: #f0e68c;
+            margin-top: 20px;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.3), 
+                inset 0 -3px 6px rgba(0,0,0,0.2), 
+                inset 0 3px 6px rgba(255,255,255,0.1);
+        }
+        #sc-calc-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.4), 
+                inset 0 -3px 6px rgba(0,0,0,0.2), 
+                inset 0 3px 6px rgba(255,255,255,0.1);
+        }
+        #sc-result {
+            display: none;
+            background: linear-gradient(145deg, #c4a032, #a98c2a);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 
+                0 10px 20px rgba(0,0,0,0.2), 
+                inset 0 -5px 10px rgba(255,255,255,0.1),
+                inset 0 5px 10px rgba(0,0,0,0.1);
+        }
+        .result-section {
+            background: linear-gradient(145deg, #e0c040, #c0a030);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 
+                inset 0 -3px 6px rgba(0,0,0,0.1), 
+                inset 0 3px 6px rgba(255,255,255,0.1);
+        }
+        #sc-reset-btn {
+            background: linear-gradient(145deg, #c14040, #9e2a2a);
+            color: #f0e68c;
+            margin-top: 20px;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.3), 
+                inset 0 -3px 6px rgba(0,0,0,0.2), 
+                inset 0 3px 6px rgba(255,255,255,0.1);
+        }
+        #sc-reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.4), 
+                inset 0 -3px 6px rgba(0,0,0,0.2), 
+                inset 0 3px 6px rgba(255,255,255,0.1);
+        }
+        .ad-container {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <title>주식 수익율 계산기 </title>
+        <div class="input-container">
+            <div style="margin-bottom: 15px;">
+                <label class="embossed-text">📊 증권 종류</label>
+                <select id="sc-market-type" class="embossed-text">
+                    <option value="kospi">코스피</option>
+                    <option value="kosdaq">코스닥</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label class="embossed-text">💰 평균 매수가</label>
+                <input id="sc-buy-price" type="text" placeholder="평균 매수가 입력" class="embossed-text">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label class="embossed-text">🔢 주식 보유량</label>
+                <input id="sc-quantity" type="text" placeholder="보유 수량 입력" class="embossed-text">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label class="embossed-text">📈 현재가</label>
+                <input id="sc-current-price" type="text" placeholder="현재 주가 입력" class="embossed-text">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label class="embossed-text">🏦 증권사 선택</label>
+                <select id="sc-broker" class="embossed-text" onchange="updateCommission()">
+                    <option value="direct">직접 입력</option>
+                    <option value="0.01">NH투자증권 (나무증권) - 0.01%</option>
+                    <option value="0.014">한국투자증권 - 0.014%</option>
+                    <option value="0.014">신한투자증권 - 0.014%</option>
+                    <option value="0.014">대신증권 - 0.014%</option>
+                    <option value="0.015">키움증권 - 0.015%</option>
+                    <option value="0.015">미래에셋증권 - 0.015%</option>
+                    <option value="0.015">KB증권 - 0.015%</option>
+                    <option value="0.015">유안타증권 - 0.015%</option>
+                    <option value="0.015">하이투자증권 - 0.015%</option>
+                    <option value="0.015">토스증권 - 0.015%</option>
+                    <option value="0.015">카카오페이증권 - 0.015%</option>
+                    <option value="0.147">삼성증권 - 0.147%</option>
+                </select>
+            </div>
+            
+            <div id="sc-commission-group" style="margin-bottom: 15px;">
+                <label class="embossed-text">📊 수수료 직접 입력</label>
+                <input id="sc-commission" type="number" step="0.001" placeholder="수수료율 입력" class="embossed-text">
+            </div>
         </div>
-    </div>
-    
-    <div style="margin-bottom: 12px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">🔢 주식 보유량</label>
-        <div style="position: relative;">
-            <input id="sc-quantity" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" type="text" placeholder="보유 수량 입력" />
-            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">주</span>
-        </div>
-    </div>
-    
-    <div style="margin-bottom: 12px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">📈 현재가</label>
-        <div style="position: relative;">
-            <input id="sc-current-price" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" type="text" placeholder="현재 주가 입력" />
-            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">원</span>
-        </div>
-    </div>
-    
-    <div style="margin-bottom: 12px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">🏦 증권사 선택</label>
-        <select id="sc-broker" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" onchange="updateCommission()">
-            <option value="direct">직접 입력</option>
-            <option value="0.01">NH투자증권 (나무증권) - 0.01%</option>
-            <option value="0.014">한국투자증권 - 0.014%</option>
-            <option value="0.014">신한투자증권 - 0.014%</option>
-            <option value="0.014">대신증권 - 0.014%</option>
-            <option value="0.015">키움증권 - 0.015%</option>
-            <option value="0.015">미래에셋증권 - 0.015%</option>
-            <option value="0.015">KB증권 - 0.015%</option>
-            <option value="0.015">유안타증권 - 0.015%</option>
-            <option value="0.015">하이투자증권 - 0.015%</option>
-            <option value="0.015">토스증권 - 0.015%</option>
-            <option value="0.015">카카오페이증권 - 0.015%</option>
-            <option value="0.147">삼성증권 - 0.147%</option>
-        </select>
-    </div>
-    
-    <div id="sc-commission-group" style="margin-bottom: 12px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">📊 수수료 직접 입력</label>
-        <div style="position: relative;">
-            <input id="sc-commission" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" step="0.001" type="number" placeholder="수수료율 입력" />
-            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">%</span>
-        </div>
-    </div>
-</div>
-
-<!-- 광고 영역 1 - 고정된 높이와 오버플로우 숨김 -->
 <div>
+
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203"
      crossorigin="anonymous"></script>
-<!-- 상단 우측 -->
+<!-- 주식수익율계산기 -->
 <ins class="adsbygoogle"
-     style="display:block"
+     style="display:inline-block;width:728px;height:90px"
      data-ad-client="ca-pub-1274782176645203"
-     data-ad-slot="5313390098"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
+     data-ad-slot="7615464233"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
-</script></div>
+</script>
+</div>
 
-<button id="sc-calc-btn" style="width: 100%; background: linear-gradient(145deg,#5a5a5a,#3a3a3a); color: white; border: none; padding: 24px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3); text-shadow: 0 1px 1px rgba(0,0,0,0.3); transition: all 0.3s; position: relative; overflow: hidden; z-index: 1;">계산하기</button>
+        <button id="sc-calc-btn" class="btn">계산하기</button>
 
-<div id="sc-result" style="display: none; margin-top: 20px; background: linear-gradient(to bottom,#fff,#f9f9f9); padding: 15px; border-radius: 8px; border: 1px solid #d1d1d1; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
-    <div style="margin-bottom: 10px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;">
-        <div style="text-align: center; padding: 3px; margin-bottom: 3px;">
-            <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">투자 정보</div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-            <div style="text-align: center; flex: 1; padding: 5px;">
-                <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">매수가</div>
-                <div id="sc-res-buy-price" style="font-weight: bold; color: #333;"></div>
+        <div id="sc-result">
+            <div class="result-section">
+                <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 10px; font-weight: bold;" class="embossed-text">투자 정보</div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="text-align: center; flex: 1;">
+                        <div class="embossed-text" style="font-size: 13px; margin-bottom: 5px;">매수가</div>
+                        <div id="sc-res-buy-price" class="embossed-text" style="font-weight: bold;"></div>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <div class="embossed-text" style="font-size: 13px; margin-bottom: 5px;">보유량</div>
+                        <div id="sc-res-quantity" class="embossed-text" style="font-weight: bold;"></div>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <div class="embossed-text" style="font-size: 13px; margin-bottom: 5px;">현재가</div>
+                        <div id="sc-res-current-price" class="embossed-text" style="font-weight: bold;"></div>
+                    </div>
+                </div>
             </div>
-            <div style="text-align: center; flex: 1; padding: 5px;">
-                <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">보유량</div>
-                <div id="sc-res-quantity" style="font-weight: bold; color: #333;"></div>
+
+            <div class="result-section">
+                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">매수 금액</div>
+                <div id="sc-res-buy-amount" class="embossed-text" style="font-size: 20px; font-weight: bold;"></div>
             </div>
-            <div style="text-align: center; flex: 1; padding: 5px;">
-                <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">현재가</div>
-                <div id="sc-res-current-price" style="font-weight: bold; color: #333;"></div>
+
+            <div class="result-section">
+                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">매도 금액</div>
+                <div id="sc-res-sell-amount" class="embossed-text" style="font-size: 20px; font-weight: bold;"></div>
             </div>
-        </div>
-    </div>
-    
-    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
-        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">매수 금액</div>
-        <div id="sc-res-buy-amount" style="font-size: 20px; font-weight: bold; color: #333; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
-    </div>
-    
-    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
-        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">매도 금액</div>
-        <div id="sc-res-sell-amount" style="font-size: 20px; font-weight: bold; color: #333; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
-    </div>
-    
-    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
-        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">수익률</div>
-        <div id="sc-res-rate" style="font-size: 24px; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
-    </div>
-    
-    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
-        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">수익 금액</div>
-        <div id="sc-res-profit" style="font-size: 24px; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
-    </div>
-    
-    <!-- 광고 영역 2 - 고정된 높이와 오버플로우 숨김 -->
-    <div style="border: 1px dashed #888; border-radius: 5px; padding: 10px; margin: 15px 0; text-align: center; background: #f9f9f9; max-width: 100%; height: 320px; overflow: hidden; position: relative;">
-        <div style="font-size: 18px; color: #4a4a4a; margin-bottom: -20px; font-weight: bold; text-align: center;">✨ 오늘의 특가제품</div>
-        <div style="max-width: 100%; height: 340px; overflow: hidden; position: relative;">
-          <script src="https://ads-partners.coupang.com/g.js"></script>
+
+            <div class="result-section">
+                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">수익률</div>
+                <div id="sc-res-rate" class="embossed-text" style="font-size: 24px; font-weight: bold;"></div>
+            </div>
+
+            <div class="result-section">
+                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">수익 금액</div>
+                <div id="sc-res-profit" class="embossed-text" style="font-size: 24px; font-weight: bold;"></div>
+            </div>
+
+<div>
+
+<script src="https://ads-partners.coupang.com/g.js"></script>
 <script>
 	new PartnersCoupang.G({"id":632732,"template":"carousel","trackingCode":"AF9512637","width":"100%","height":"250","tsource":""});
 </script>
+
+</div>
+
+
+            <button id="sc-reset-btn" class="btn">다시 계산하기</button>
         </div>
     </div>
-    
-    <button id="sc-reset-btn" style="width: 100%; background: linear-gradient(145deg,#c14040,#9e2a2a); color: white; border: none; padding: 24px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.3); transition: all 0.3s; position: relative; overflow: hidden; z-index: 1; margin-top: 15px;">다시 계산하기</button>
-</div>
 
-<style>
-    @keyframes scShine {
-      0% { transform: translateX(-100%) skewX(-15deg); }
-      100% { transform: translateX(200%) skewX(-15deg); }
-    }
-    
-    /* 광고 영역 통제를 위한 스타일 */
-    #sc-box .adsbygoogle,
-    #sc-box iframe {
-      max-width: 100% !important;
-      max-height: 100% !important;
-      overflow: hidden !important;
-    }
-</style>
-
-<script>
-(function(){
-    // 숫자 포맷팅 함수
-    function formatNumber(e){
-        let v=e.value.replace(/[^\d]/g,'');
-        e.value=v?parseInt(v).toLocaleString():'';
-    }
-    
-    // 숫자 추출 함수
-    function extractNumber(v){
-        return v?parseFloat(v.replace(/,/g,'')):0;
-    }
-    
-    // 버튼 효과 추가 함수
-    function addShineEffect(btn){
-        btn.addEventListener('mouseover',function(){
-            let shine=document.createElement('div');
-            shine.style.position='absolute';
-            shine.style.top='0';
-            shine.style.left='0';
-            shine.style.width='30px';
-            shine.style.height='100%';
-            shine.style.background='linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(255,255,255,0) 100%)';
-            shine.style.transform='translateX(-100%) skewX(-15deg)';
-            shine.style.animation='scShine 1.5s infinite';
-            this.appendChild(shine);
-        });
-        
-        btn.addEventListener('mouseout',function(){
-            let shines=this.querySelectorAll('div');
-            shines.forEach(shine=>shine.remove());
-        });
-    }
-    
-    // 버튼 효과 설정
-    const calcBtn=document.getElementById('sc-calc-btn');
-    const resetBtn=document.getElementById('sc-reset-btn');
-    
-    // 호버 효과
-    calcBtn.addEventListener('mouseover',function(){
-        this.style.boxShadow='0 5px 10px rgba(0,0,0,0.4)';
-        this.style.transform='translateY(-2px)';
-    });
-    
-    calcBtn.addEventListener('mouseout',function(){
-        this.style.boxShadow='0 3px 6px rgba(0,0,0,0.3)';
-        this.style.transform='translateY(0)';
-    });
-    
-    resetBtn.addEventListener('mouseover',function(){
-        this.style.boxShadow='0 5px 10px rgba(0,0,0,0.3)';
-        this.style.transform='translateY(-2px)';
-    });
-    
-    resetBtn.addEventListener('mouseout',function(){
-        this.style.boxShadow='0 3px 6px rgba(0,0,0,0.2)';
-        this.style.transform='translateY(0)';
-    });
-    
-    // 반짝임 효과 추가
-    addShineEffect(calcBtn);
-    addShineEffect(resetBtn);
-    
-    // 증권사 선택에 따른 수수료 입력란 표시 여부
-    window.updateCommission = function(){
-        const brokerSelect=document.getElementById('sc-broker');
-        const commissionGroup=document.getElementById('sc-commission-group');
-        const commissionInput=document.getElementById('sc-commission');
-        
-        if(brokerSelect.value==='direct'){
-            commissionGroup.style.display='block';
-        } else {
-            commissionGroup.style.display='none';
-            commissionInput.value=brokerSelect.value;
-        }
-    };
-    
-    // 계산하기 버튼 클릭 이벤트
-    calcBtn.onclick=function(){
-        const avgBuyPrice=extractNumber(document.getElementById('sc-buy-price').value);
-        const stockQuantity=extractNumber(document.getElementById('sc-quantity').value);
-        const currentPrice=extractNumber(document.getElementById('sc-current-price').value);
-        const commissionRate=parseFloat(document.getElementById('sc-commission').value || document.getElementById('sc-broker').value)/100;
-        
-        // 입력값 검증
-        if(!avgBuyPrice || !stockQuantity || !currentPrice){
-            alert('모든 필드를 입력해주세요.');
-            return;
+    <script>
+    (function(){
+        // 숫자 포맷팅 함수
+        function formatNumber(e){
+            let v=e.value.replace(/[^\d]/g,'');
+            e.value=v?parseInt(v).toLocaleString():'';
         }
         
-        // 계산
-        const buyAmount=avgBuyPrice*stockQuantity;
-        const sellAmountBeforeFee=currentPrice*stockQuantity;
-        const sellFee=sellAmountBeforeFee*commissionRate;
-        const sellAmount=sellAmountBeforeFee-sellFee;
-        const profitAmount=sellAmount-buyAmount;
-        const profitRate=(profitAmount/buyAmount)*100;
-        
-        // 결과 표시
-        document.getElementById('sc-res-buy-price').textContent=avgBuyPrice.toLocaleString()+'원';
-        document.getElementById('sc-res-quantity').textContent=stockQuantity.toLocaleString()+'주';
-        document.getElementById('sc-res-current-price').textContent=currentPrice.toLocaleString()+'원';
-        document.getElementById('sc-res-buy-amount').textContent=buyAmount.toLocaleString()+'원';
-        document.getElementById('sc-res-sell-amount').textContent=sellAmount.toLocaleString()+'원';
-        
-        const rateElement=document.getElementById('sc-res-rate');
-        rateElement.textContent=profitRate.toFixed(2)+'%';
-        
-        const profitElement=document.getElementById('sc-res-profit');
-        profitElement.textContent=profitAmount.toLocaleString()+'원';
-        
-        // 수익/손실에 따른 색상 적용
-        if(profitAmount>0){
-            rateElement.style.color='#ef4444';
-            profitElement.style.color='#ef4444';
-        } else {
-            rateElement.style.color='#3b82f6';
-            profitElement.style.color='#3b82f6';
+        // 숫자 추출 함수
+        function extractNumber(v){
+            return v?parseFloat(v.replace(/,/g,'')):0;
         }
         
-        // 결과 표시
-        document.getElementById('sc-result').style.display='block';
+        // 증권사 선택에 따른 수수료 입력란 표시 여부
+        window.updateCommission = function(){
+            const brokerSelect=document.getElementById('sc-broker');
+            const commissionGroup=document.getElementById('sc-commission-group');
+            const commissionInput=document.getElementById('sc-commission');
+            
+            if(brokerSelect.value==='direct'){
+                commissionGroup.style.display='block';
+            } else {
+                commissionGroup.style.display='none';
+                commissionInput.value=brokerSelect.value;
+            }
+        };
         
-        // 결과 영역으로 스크롤
-        window.scrollTo({
-            top: document.getElementById('sc-result').offsetTop-10,
-            behavior: 'smooth'
-        });
+        // 계산하기 버튼 클릭 이벤트
+        document.getElementById('sc-calc-btn').onclick=function(){
+            const avgBuyPrice=extractNumber(document.getElementById('sc-buy-price').value);
+            const stockQuantity=extractNumber(document.getElementById('sc-quantity').value);
+            const currentPrice=extractNumber(document.getElementById('sc-current-price').value);
+            const commissionRate=parseFloat(document.getElementById('sc-commission').value || document.getElementById('sc-broker').value)/100;
+            
+            // 입력값 검증
+            if(!avgBuyPrice || !stockQuantity || !currentPrice){
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+            
+            // 계산
+            const buyAmount=avgBuyPrice*stockQuantity;
+            const sellAmountBeforeFee=currentPrice*stockQuantity;
+            const sellFee=sellAmountBeforeFee*commissionRate;
+            const sellAmount=sellAmountBeforeFee-sellFee;
+            const profitAmount=sellAmount-buyAmount;
+            const profitRate=(profitAmount/buyAmount)*100;
+            
+            // 결과 표시
+            document.getElementById('sc-res-buy-price').textContent=avgBuyPrice.toLocaleString()+'원';
+            document.getElementById('sc-res-quantity').textContent=stockQuantity.toLocaleString()+'주';
+            document.getElementById('sc-res-current-price').textContent=currentPrice.toLocaleString()+'원';
+            document.getElementById('sc-res-buy-amount').textContent=buyAmount.toLocaleString()+'원';
+            document.getElementById('sc-res-sell-amount').textContent=sellAmount.toLocaleString()+'원';
+            
+            const rateElement=document.getElementById('sc-res-rate');
+            rateElement.textContent=profitRate.toFixed(2)+'%';
+            
+            const profitElement=document.getElementById('sc-res-profit');
+            profitElement.textContent=profitAmount.toLocaleString()+'원';
+            
+            // 수익/손실에 따른 색상 적용
+            if(profitAmount>0){
+                rateElement.style.color='#ef4444';
+                profitElement.style.color='#ef4444';
+            } else {
+                rateElement.style.color='#3b82f6';
+                profitElement.style.color='#3b82f6';
+            }
+            
+            // 결과 표시
+            document.getElementById('sc-result').style.display='block';
+            
+            // 결과 영역으로 스크롤
+            window.scrollTo({
+                top: document.getElementById('sc-result').offsetTop-10,
+                behavior: 'smooth'
+            });
+            
+            // 광고 새로고침 시도
+            try {
+                (adsbygoogle=window.adsbygoogle||[]).push({});
+            } catch(e){
+                console.log('광고 새로고침 오류:',e);
+            }
+        };
         
-        // 광고 새로고침 시도
-        try {
-            (adsbygoogle=window.adsbygoogle||[]).push({});
-        } catch(e){
-            console.log('광고 새로고침 오류:',e);
-        }
-    };
-    
-    // 다시 계산하기 버튼 클릭 이벤트
-    resetBtn.onclick=function(){
-        document.getElementById('sc-buy-price').value='';
-        document.getElementById('sc-quantity').value='';
-        document.getElementById('sc-current-price').value='';
-        document.getElementById('sc-broker').value='direct';
-        document.getElementById('sc-commission').value='';
-        document.getElementById('sc-result').style.display='none';
+        // 다시 계산하기 버튼 클릭 이벤트
+        document.getElementById('sc-reset-btn').onclick=function(){
+            document.getElementById('sc-buy-price').value='';
+            document.getElementById('sc-quantity').value='';
+            document.getElementById('sc-current-price').value='';
+            document.getElementById('sc-broker').value='direct';
+            document.getElementById('sc-commission').value='';
+            document.getElementById('sc-result').style.display='none';
+            
+            // 주식 수량 입력 칸으로 스크롤
+            const quantityInput = document.getElementById('sc-quantity');
+            quantityInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            quantityInput.focus();
+            
+            // 증권사 선택에 따른 수수료 입력란 상태 업데이트
+            updateCommission();
+        };
         
-        // 상단으로 스크롤
-        window.scrollTo({
-            top: document.getElementById('sc-box').offsetTop-10,
-            behavior: 'smooth'
-        });
+        // 숫자 입력 필드에 포맷팅 이벤트 추가
+        ['sc-buy-price','sc-quantity','sc-current-price'].forEach(i=>
+            document.getElementById(i).addEventListener('input',function(){
+                formatNumber(this);
+            })
+        );
         
-        // 증권사 선택에 따른 수수료 입력란 상태 업데이트
+        // 초기 설정
         updateCommission();
-    };
-    
-    // 숫자 입력 필드에 포맷팅 이벤트 추가
-    ['sc-buy-price','sc-quantity','sc-current-price'].forEach(i=>
-        document.getElementById(i).addEventListener('input',function(){
-            formatNumber(this);
-        })
-    );
-    
-    // 초기 설정
-    updateCommission();
-})();
-</script>
-</div>
+    })();
+    </script>
+</body>
+</html>
