@@ -1,0 +1,125 @@
+/* Korean Loan Calculator Styles */
+
+/* 광고 영역 스타일링 */
+.loan-calculator-ad {
+    position: relative;
+    min-height: 90px;
+    max-height: 250px;
+}
+
+.loan-calculator-ad .ad-content {
+    position: relative;
+    max-width: 100%;
+    text-align: center;
+}
+
+.loan-calculator-ad .ad-content iframe,
+.loan-calculator-ad .ad-content img,
+.loan-calculator-ad .ad-content div,
+.loan-calculator-ad .ad-content script {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.loan-calculator input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.loan-calculator input[type="number"]::-webkit-outer-spin-button,
+.loan-calculator input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.loan-calculator button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.loan-calculator button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.loan-calculator button:active {
+    transform: translateY(1px);
+}
+
+.loan-calculator button:after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    opacity: 0;
+    transform: rotate(30deg);
+    background: rgba(255, 255, 255, 0.13);
+    background: linear-gradient(
+        to right, 
+        rgba(255, 255, 255, 0.13) 0%,
+        rgba(255, 255, 255, 0.13) 77%,
+        rgba(255, 255, 255, 0.5) 92%,
+        rgba(255, 255, 255, 0.0) 100%
+    );
+}
+
+.loan-calculator button:hover:after {
+    opacity: 1;
+    left: 130%;
+    transition: all 0.7s ease-in-out;
+}
+
+.loan-calculator label {
+    transition: all 0.3s ease;
+}
+
+/* PC/모바일 화면 분기 */
+@media (max-width: 768px) {
+    .pc-table {
+        display: none;
+    }
+    
+    .mobile-cards {
+        display: block;
+    }
+    
+    .loan-calculator {
+        padding: 15px !important;
+    }
+    
+    #payment-table {
+        font-size: 14px;
+    }
+    
+    #payment-table th,
+    #payment-table td {
+        padding: 6px !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .pc-table {
+        display: block;
+    }
+    
+    .mobile-cards {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .loan-calculator {
+        padding: 10px !important;
+    }
+    
+    #payment-table {
+        font-size: 12px;
+    }
+    
+    #payment-table th,
+    #payment-table td {
+        padding: 4px !important;
+    }
+}
