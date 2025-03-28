@@ -211,7 +211,39 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
-       
+        /* 광고 컨테이너 - 마이너스 통장 계산기 스타일 참고 */
+        .ad-container {
+            border: 1px dashed rgba(128, 128, 128, 0.3);
+            border-radius: 5px;
+            padding: 10px;
+            margin: 15px 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.5);
+            max-width: 100%;
+            height: 290px; /* 고정된 높이 */
+            overflow: hidden; /* 오버플로우 숨김 */
+            position: relative;
+        }
+        
+        /* 광고 요소 제어 */
+        .ad-container .adsbygoogle,
+        .ad-container iframe {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            overflow: hidden !important;
+        }
+        
+        /* 하단 광고 컨테이너 */
+        .bottom-ad-container {
+            margin-top: 20px;
+            height: 290px;
+        }
+        
+        /* 쿠팡 광고 컨테이너 */
+        .coupang-ad {
+            height: 300px;
+        }
+        
         /* 버튼 스타일 */
         .btn {
             display: block;
@@ -417,6 +449,12 @@
             opacity: 1;
         }
         
+        /* 버튼 반짝임 효과 */
+        @keyframes btnShine {
+            0% { transform: translateX(-100%) skewX(-15deg); }
+            100% { transform: translateX(200%) skewX(-15deg); }
+        }
+        
         /* 모바일 반응형 */
         @media (max-width: 768px) {
             .container {
@@ -480,7 +518,7 @@
             }
         }
     </style>
-    <!-- 구글 애드센스 -->
+    <!-- 구글 애드센스 - 마이너스 통장 계산기와 같이 head에 배치 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -528,16 +566,7 @@
             </div>
         </div>
         
-        <!-- 상단 광고 -->
-        <div class="ad-container">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-1274782176645203"
-                 data-ad-slot="1917070566"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-        </div>
-        
+              
         <!-- 계산기 폼 -->
         <div class="calculator-form" id="calculatorForm">
             <div class="form-tabs">
@@ -623,12 +652,15 @@
                     <input type="number" id="commission" class="input-field" step="0.001" placeholder="예: 0.015">
                 </div>
                 
-                <!-- 계산 버튼 위 광고 -->
+                <!-- 계산 버튼 위 광고 - 마이너스 통장 계산기와 유사한 구조 -->
                 <div class="ad-container">
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                     <ins class="adsbygoogle"
-                         style="display:block"
+                         style="display: block; max-width: 100%; height: 250px; overflow: hidden;"
                          data-ad-client="ca-pub-1274782176645203"
-                         data-ad-slot="7615464233"
+                         data-ad-slot="1917070566"
                          data-ad-format="auto"
                          data-full-width-responsive="true"></ins>
                 </div>
@@ -724,14 +756,19 @@
             </div>
         </div>
         
-        <!-- 하단 광고 -->
-        <div class="ad-container">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-1274782176645203"
-                 data-ad-slot="1917070566"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
+        <!-- 하단 광고 영역 - 마이너스 통장 계산기와 유사한 구조 -->
+        <div class="ad-container bottom-ad-container">
+            <div style="font-size: 18px; color: #555; margin-bottom: 5px; font-weight: bold; text-align: center;">✨ 추천 상품</div>
+            <script src="https://ads-partners.coupang.com/g.js"></script>
+            <script>
+                new PartnersCoupang.G({
+                    "id": 764221,
+                    "template": "carousel",
+                    "trackingCode": "AF7962515",
+                    "width": "100%",
+                    "height": "250"
+                });
+            </script>
         </div>
     </div>
     
@@ -762,14 +799,12 @@
                 <div class="result-value" id="profitAmount">0 원</div>
             </div>
             
-            <!-- 결과 화면 광고 -->
+            <!-- 결과 화면 광고 - 마이너스 통장 계산기와 유사한 구조 -->
             <div class="ad-container">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-1274782176645203"
-                     data-ad-slot="1917070566"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
+            <script src="https://ads-partners.coupang.com/g.js"></script>
+<script>
+	new PartnersCoupang.G({"id":632732,"template":"carousel","trackingCode":"AF9512637","width":"100%","height":"250","tsource":""});
+</script>
             </div>
             
             <div class="btn-container">
@@ -782,47 +817,52 @@
             </div>
         </div>
     </div>
-    
-    <!-- 쿠팡 광고 (선택적) -->
-    <script src="https://ads-partners.coupang.com/g.js"></script>
+
     <script>
-        // 쿠팡 파트너스 광고 함수
-        function loadCoupangAd() {
-            new PartnersCoupang.G({
-                "id": 764221,
-                "template": "carousel",
-                "trackingCode": "AF7962515",
-                "width": "100%",
-                "height": "250"
+        // 광고 로딩 최적화 및 강제 초기화 - 마이너스 통장 계산기 방식 참고
+        window.onload = function() {
+            setTimeout(function() {
+                // 페이지 내 모든 광고 초기화
+                var adElements = document.querySelectorAll('.adsbygoogle');
+                for (var i = 0; i < adElements.length; i++) {
+                    try {
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    } catch (e) {
+                        console.log('AdSense 초기화 중 오류:', e);
+                    }
+                }
+            }, 100);
+        };
+        
+        // 버튼 반짝임 효과 추가
+        function addShineEffect(btn) {
+            btn.addEventListener('mouseover', function() {
+                let shine = document.createElement('div');
+                shine.style.position = 'absolute';
+                shine.style.top = '0';
+                shine.style.left = '0';
+                shine.style.width = '30px';
+                shine.style.height = '100%';
+                shine.style.background = 'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)';
+                shine.style.transform = 'translateX(-100%) skewX(-15deg)';
+                shine.style.animation = 'btnShine 1.5s infinite';
+                this.appendChild(shine);
+            });
+            
+            btn.addEventListener('mouseout', function() {
+                let shines = this.querySelectorAll('div');
+                shines.forEach(shine => shine.remove());
             });
         }
         
-        // 페이지 로드 시 쿠팡 광고 로드
-        window.addEventListener('load', function() {
-            try {
-                loadCoupangAd();
-            } catch (e) {
-                console.log('쿠팡 광고 로드 실패:', e);
-            }
-        });
-    </script>
-
-    <script>
-        // 애드센스 초기화
-        window.onload = function() {
-            // 애드센스 광고 로드 (비동기)
-            try {
-                // 모든 광고 요소 초기화
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (e) {
-                console.log('AdSense 초기화 중 오류:', e);
-            }
-        };
-        
         // 탭 전환 기능
         document.addEventListener('DOMContentLoaded', function() {
+            // 버튼에 효과 추가
+            const calcBtn = document.querySelector('.btn');
+            const resetBtn = document.querySelector('.btn');
+            addShineEffect(calcBtn);
+            addShineEffect(resetBtn);
+            
             // 탭 클릭 이벤트 리스너 등록
             const tabs = document.querySelectorAll('.form-tab');
             tabs.forEach(tab => {
@@ -869,7 +909,7 @@
             
             // 천 단위 콤마 추가
             if (value) {
-                value = Number(value).toLocaleString('ko-KR');
+                value = parseInt(value).toLocaleString();
             }
             
             // 포맷된 값으로 업데이트
@@ -949,9 +989,9 @@
             const profitRate = (profitAmount / buyAmount) * 100;
             
             // 결과 표시
-            document.getElementById('buyAmount').textContent = buyAmount.toLocaleString('ko-KR') + ' 원';
-            document.getElementById('sellAmount').textContent = sellAmount.toLocaleString('ko-KR') + ' 원';
-            document.getElementById('profitAmount').textContent = profitAmount.toLocaleString('ko-KR') + ' 원';
+            document.getElementById('buyAmount').textContent = buyAmount.toLocaleString() + ' 원';
+            document.getElementById('sellAmount').textContent = sellAmount.toLocaleString() + ' 원';
+            document.getElementById('profitAmount').textContent = profitAmount.toLocaleString() + ' 원';
             document.getElementById('profitRate').textContent = profitRate.toFixed(2) + ' %';
             
             // 수익/손실에 따른 색상 적용
@@ -969,6 +1009,15 @@
             
             // 팝업창 표시
             openPopup();
+            
+            // 광고 새로고침 시도
+            try {
+                setTimeout(function() {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                }, 200);
+            } catch (e) {
+                console.log('광고 새로고침 오류:', e);
+            }
         }
         
         // 초기화 및 다시 계산하기
