@@ -17,6 +17,7 @@
             --header-text: #ffffff;
             --profit: #ef4444;
             --loss: #3b82f6;
+            --guide-bg: rgba(0, 0, 0, 0.3); /* 더 어두운 배경 */
         }
         
         /* 기본 스타일 */
@@ -28,17 +29,16 @@
         }
         
         #stockCalc {
-            width: 100%;
-            max-width: 800px; /* 최대 너비 지정 */
-            margin: 0 auto; /* 가운데 정렬 */
+            width: 100%; /* 좌우 100% 활용 */
+            margin: 0 auto;
             padding: 20px;
             border-radius: 15px;
             background-color: var(--background);
             color: var(--text);
             font-size: 16px;
             line-height: 1.6;
-            overflow: visible; /* 내용 넘침 허용 */
-            box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+            overflow: visible;
+            box-sizing: border-box;
         }
         
         /* 헤더 영역 */
@@ -103,12 +103,13 @@
             }
         }
         
-        /* 사용 가이드 */
+        /* 사용 가이드 - 더 어두운 배경으로 수정 */
         #stockCalc .usage-guide {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--guide-bg);
             border-radius: 10px;
             padding: 15px 20px;
             margin-top: 15px;
+            color: #ffffff; /* 텍스트 색상을 흰색으로 변경 */
         }
         
         #stockCalc .guide-title {
@@ -144,13 +145,14 @@
             border-radius: 12px;
             margin-bottom: 20px;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            width: 100%; /* 좌우 100% 활용 */
         }
         
         #stockCalc .form-tabs {
             display: flex;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            flex-wrap: wrap; /* 모바일에서 탭 줄바꿈 허용 */
+            flex-wrap: wrap;
         }
         
         #stockCalc .form-tab {
@@ -159,6 +161,7 @@
             font-weight: 600;
             opacity: 0.7;
             border-bottom: 2px solid transparent;
+            transition: all 0.3s ease; /* 부드러운 전환 효과 */
         }
         
         #stockCalc .form-tab.active {
@@ -169,6 +172,7 @@
         
         #stockCalc .tab-content {
             display: none;
+            width: 100%; /* 좌우 100% 활용 */
         }
         
         #stockCalc .tab-content.active {
@@ -177,6 +181,7 @@
         
         #stockCalc .input-group {
             margin-bottom: 20px;
+            width: 100%; /* 모든 입력 그룹 너비 통일 */
         }
         
         #stockCalc .input-label {
@@ -187,7 +192,7 @@
         }
         
         #stockCalc .input-field {
-            width: 100%;
+            width: 100%; /* 모든 입력 필드 너비 통일 */
             padding: 12px 15px;
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 8px;
@@ -202,10 +207,11 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
+        /* 버튼 크기 및 효과 향상 */
         #stockCalc .calculate-btn {
             display: block;
             width: 100%;
-            padding: 20px;
+            padding: 25px; /* 버튼 높이 증가 */
             background-color: var(--accent);
             color: white;
             border: none;
@@ -217,6 +223,8 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
+            margin-top: 15px; /* 상단 여백 추가 */
         }
         
         #stockCalc .calculate-btn:before {
@@ -238,6 +246,7 @@
         #stockCalc .calculate-btn:hover {
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
+            background-color: var(--primary); /* 호버시 색상 변경 */
         }
         
         #stockCalc .calculate-btn:active {
@@ -248,7 +257,7 @@
         /* 수수료 정보 테이블 */
         #stockCalc .fees-container {
             width: 100%;
-            overflow-x: auto; /* 가로 스크롤 허용 */
+            overflow-x: auto;
             border-radius: 8px;
             margin-bottom: 10px;
         }
@@ -256,7 +265,7 @@
         #stockCalc .fees-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 400px; /* 최소 테이블 너비 설정 */
+            min-width: 400px;
         }
         
         #stockCalc .fees-table th,
@@ -270,7 +279,7 @@
             background-color: rgba(0, 0, 0, 0.05);
             font-weight: 600;
             position: sticky;
-            top: 0; /* 스크롤 시 헤더 고정 */
+            top: 0;
         }
         
         #stockCalc .fee-rate {
@@ -284,13 +293,24 @@
             text-align: center;
         }
         
-        /* 결과 영역 */
+        /* 결과 영역 - 부드러운 애니메이션 추가 */
         #stockCalc .result-container {
             background: var(--card-bg);
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
             display: none;
+            width: 100%; /* 좌우 100% 활용 */
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease;
+            margin-top: 0;
+        }
+        
+        #stockCalc .result-container.active {
+            display: block;
+            max-height: 2000px; /* 충분히 큰 값 */
+            margin-top: 20px;
         }
         
         #stockCalc .result-title {
@@ -325,11 +345,12 @@
             color: var(--loss);
         }
         
+        /* 다시 계산하기 버튼 - 높이 및 효과 증가 */
         #stockCalc .recalculate-btn {
             display: block;
             width: 100%;
-            padding: 20px;
-            margin-top: 0; /* 광고와 버튼 사이 간격 제거 */
+            padding: 25px; /* 버튼 높이 증가 */
+            margin-top: 20px;
             background-color: var(--accent);
             color: white;
             border: none;
@@ -340,6 +361,8 @@
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
         }
         
         #stockCalc .recalculate-btn:before {
@@ -361,6 +384,7 @@
         #stockCalc .recalculate-btn:hover {
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
+            background-color: var(--primary); /* 호버시 색상 변경 */
         }
         
         #stockCalc .recalculate-btn:active {
@@ -368,29 +392,25 @@
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
         }
         
-        /* 광고 영역 - 수정된 부분 */
+        /* 광고 영역 - 반응형으로 수정 */
         #stockCalc .ad-container {
-            margin: 0 0 8px 0; /* 버튼과의 간격을 8px로 조정 */
-            padding: 0; /* 패딩 제거로 콘텐츠 영역 최대화 */
-            background: transparent; /* 배경 투명하게 변경 */
-            border-radius: 8px; /* 약간의 라운딩만 유지 */
+            margin: 15px 0;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 10px;
             text-align: center;
-            width: 100%; /* 부모 너비에 맞춤 */
-            display: flex; /* flexbox 사용 */
-            justify-content: center; /* 가로 중앙 정렬 */
-            align-items: center; /* 세로 중앙 정렬 */
+            overflow: hidden !important;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 90px; /* 최소 높이 설정 */
-            max-height: none; /* 최대 높이 제한 해제 */
-            overflow: hidden; /* 내용 넘침 방지 */
         }
         
-        /* 광고 내부 아이템이 부모 컨테이너를 넘어가지 않도록 설정 */
-        #stockCalc .ad-container > div,
-        #stockCalc .ad-container > ins,
-        #stockCalc .ad-container > script + ins {
-            width: 100% !important; /* 너비 100%로 강제 */
-            max-width: 100% !important; /* 최대 너비도 100%로 제한 */
-            overflow: hidden !important; /* 내용 넘침 방지 */
+        #stockCalc .ad-container ins {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
         }
         
         /* 툴팁 */
@@ -428,7 +448,7 @@
         @media (max-width: 768px) {
             #stockCalc {
                 padding: 15px;
-                max-width: 100%; /* 모바일에서 전체 너비 사용 */
+                width: 100%; /* 모바일에서 전체 너비 사용 */
             }
             
             #stockCalc .header {
@@ -464,10 +484,28 @@
                 margin-top: 5px;
             }
             
-            /* 모바일에서 광고 높이 조정 */
-            #stockCalc .ad-container {
-                min-height: 50px; /* 모바일에서 최소 높이 줄임 */
+            /* 모바일에서 버튼 크기 조정 */
+            #stockCalc .calculate-btn,
+            #stockCalc .recalculate-btn {
+                padding: 20px;
+                font-size: 18px;
             }
+        }
+        
+        /* 부드러운 스크롤 애니메이션 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
         }
     </style>
 </head>
@@ -541,7 +579,7 @@
                             <span class="tooltip-text">주식을 매수했던 평균 가격을 입력하세요</span>
                         </span>
                     </label>
-                    <input type="text" id="avgBuyPrice" class="input-field" placeholder="예: 50,000" oninput="formatNumber(this)" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" id="avgBuyPrice" class="input-field" placeholder="예: 50,000" oninput="formatNumber(this)">
                 </div>
                 
                 <div class="input-group">
@@ -552,7 +590,7 @@
                             <span class="tooltip-text">보유중인 주식의 수량을 입력하세요</span>
                         </span>
                     </label>
-                    <input type="text" id="stockQuantity" class="input-field" placeholder="예: 100" oninput="formatNumber(this)" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" id="stockQuantity" class="input-field" placeholder="예: 100" oninput="formatNumber(this)">
                 </div>
                 
                 <div class="input-group">
@@ -563,7 +601,7 @@
                             <span class="tooltip-text">현재 주식의 시장 가격을 입력하세요</span>
                         </span>
                     </label>
-                    <input type="text" id="currentPrice" class="input-field" placeholder="예: 55,000" oninput="formatNumber(this)" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" id="currentPrice" class="input-field" placeholder="예: 55,000" oninput="formatNumber(this)">
                 </div>
                 
                 <div class="input-group">
@@ -599,20 +637,22 @@
                             <span class="tooltip-text">거래시 적용되는 수수료율을 직접 입력하세요. 일반적으로 0.015~0.35% 범위입니다.</span>
                         </span>
                     </label>
-                    <input type="number" id="commission" class="input-field" step="0.001" placeholder="예: 0.015" inputmode="decimal">
+                    <input type="number" id="commission" class="input-field" step="0.001" placeholder="예: 0.015">
                 </div>
                 
-                <!-- 계산 버튼 위 광고 영역 - 수정된 부분 -->
+                <!-- 광고 영역 - 반응형으로 수정 -->
                 <div class="ad-container">
+                    <!-- 애드센스 반응형 광고 -->
                     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203"
                     crossorigin="anonymous"></script>
                     <ins class="adsbygoogle"
-                        style="display:block"
-                        data-ad-format="autorelaxed"
-                        data-ad-client="ca-pub-1274782176645203"
-                        data-ad-slot="7023842141"></ins>
+                         style="display:block"
+                         data-ad-client="ca-pub-1274782176645203"
+                         data-ad-slot="7324437778"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
                     <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
+                         (adsbygoogle = window.adsbygoogle || []).push({});
                     </script>
                 </div>
                 
@@ -707,9 +747,9 @@
             </div>
         </div>
         
-        <!-- 결과 영역 -->
+        <!-- 결과 영역 - 부드러운 애니메이션 추가 -->
         <div class="result-container" id="resultContainer">
-            <div class="result-title" id="resultTitle">
+            <div class="result-title">
                 📊 주식 수익률 계산 결과
             </div>
             
@@ -733,11 +773,11 @@
                 <div class="result-value" id="profitAmount">0 원</div>
             </div>
             
-            <!-- 다시 계산하기 버튼 위 광고 영역 - 수정된 부분 -->
             <div class="ad-container">
+                <!-- 광고 코드 - 반응형으로 수정 -->
                 <script src="https://ads-partners.coupang.com/g.js"></script>
                 <script>
-                    new PartnersCoupang.G({"id":764221,"template":"carousel","trackingCode":"AF7962515","width":"100%","height":"auto","tsource":""});
+                    new PartnersCoupang.G({"id":764221,"template":"carousel","trackingCode":"AF7962515","width":"100%","height":"300","tsource":""});
                 </script>
             </div>
             
@@ -747,7 +787,7 @@
         </div>
     </div>
 
-    <!-- JavaScript 기능 -->
+    <!-- JavaScript 기능 - 부드러운 애니메이션 추가 -->
     <script>
         // 테마 변경 함수
         function changeTheme(theme) {
@@ -769,6 +809,7 @@
                 stockCalc.style.setProperty('--header-text', '#f8fafc');
                 stockCalc.style.setProperty('--profit', '#f87171');
                 stockCalc.style.setProperty('--loss', '#60a5fa');
+                stockCalc.style.setProperty('--guide-bg', 'rgba(0, 0, 0, 0.5)');
             } else if (theme === 'theme3') {
                 // 네온 테마
                 stockCalc.style.setProperty('--primary', '#6b21a8');
@@ -781,6 +822,7 @@
                 stockCalc.style.setProperty('--header-text', '#ffffff');
                 stockCalc.style.setProperty('--profit', '#10b981');
                 stockCalc.style.setProperty('--loss', '#3b82f6');
+                stockCalc.style.setProperty('--guide-bg', 'rgba(91, 33, 182, 0.6)');
             } else {
                 // 기본 메탈실버 테마 (theme1)
                 stockCalc.style.setProperty('--primary', '#7a7a7a');
@@ -793,6 +835,7 @@
                 stockCalc.style.setProperty('--header-text', '#ffffff');
                 stockCalc.style.setProperty('--profit', '#ef4444');
                 stockCalc.style.setProperty('--loss', '#3b82f6');
+                stockCalc.style.setProperty('--guide-bg', 'rgba(0, 0, 0, 0.3)');
             }
             
             // 테마 클래스 추가
@@ -863,7 +906,7 @@
             }
         }
         
-        // 수익률 계산 함수
+        // 수익률 계산 함수 - 부드러운 애니메이션 추가
         function calculateProfit() {
             // 입력값 가져오기
             const avgBuyPrice = extractNumber(document.getElementById('avgBuyPrice').value);
@@ -910,12 +953,20 @@
                 document.getElementById('profitRate').classList.remove('positive');
             }
             
-            // 계산기 폼 숨기고 결과 표시
+            // 계산기 폼 숨기고 결과 부드럽게 표시
             document.getElementById('calculatorForm').style.display = 'none';
-            document.getElementById('resultContainer').style.display = 'block';
             
-            // 결과 제목(상단)으로 스크롤 이동
-            document.getElementById('resultTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // 결과 컨테이너에 active 클래스 추가하여 부드럽게 표시
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.style.display = 'block';
+            
+            // 짧은 딜레이 후 애니메이션 클래스 추가
+            setTimeout(() => {
+                resultContainer.classList.add('active', 'fade-in-up');
+                
+                // 결과 컨테이너로 스크롤
+                resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
         }
         
         // 초기화 및 다시 계산하기
@@ -930,13 +981,19 @@
             // 증권사 선택에 따른 수수료 입력란 상태 업데이트
             updateCommission();
             
-            // 계산기 폼 다시 표시하고 결과 숨기기
-            document.getElementById('calculatorForm').style.display = 'block';
-            document.getElementById('resultContainer').style.display = 'none';
+            // 결과 컨테이너 애니메이션 제거 및 숨기기
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.remove('active', 'fade-in-up');
             
-            // 스크롤을 증권 종류 선택 필드로 이동
-            const marketTypeElement = document.getElementById('marketType');
-            marketTypeElement.scrollIntoView({ behavior: 'smooth' });
+            // 짧은 딜레이 후 계산기 폼 표시
+            setTimeout(() => {
+                document.getElementById('calculatorForm').style.display = 'block';
+                resultContainer.style.display = 'none';
+                
+                // 스크롤을 증권 종류 선택 필드로 이동
+                const marketTypeElement = document.getElementById('marketType');
+                marketTypeElement.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
         }
     </script>
 </body>
