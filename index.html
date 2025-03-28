@@ -1,1045 +1,324 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>주식 수익률 계산기</title>
-    <style>
-        /* 기본 테마 설정 */
-        :root {
-            --primary: #7a7a7a;
-            --secondary: #5a5a5a;
-            --accent: #4a4a4a;
-            --background: #e6e6e6;
-            --card-bg: #f5f5f5;
-            --text: #2c2c2c;
-            --header-gradient: linear-gradient(135deg, #c0c0c0, #8e8e8e);
-            --header-text: #ffffff;
-            --profit: #ef4444;
-            --loss: #3b82f6;
-            --guide-bg: rgba(0, 0, 0, 0.3);
-        }
-        
-        /* 기본 스타일 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', sans-serif;
-        }
-        
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--background);
-            color: var(--text);
-            font-size: 16px;
-            line-height: 1.6;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* 헤더 영역 */
-        .header {
-            background: var(--header-gradient);
-            color: var(--header-text);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            position: relative;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-title {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .header-icon {
-            font-size: 36px;
-            width: 64px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-        }
-        
-        /* 차트 영역 */
-        .chart-container {
-            margin-top: 15px;
-            height: 60px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .chart-animation {
-            position: absolute;
-            width: 200%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='60' viewBox='0 0 300 60'%3E%3Cpath d='M0,30 L10,20 L20,40 L30,10 L40,30 L50,25 L60,35 L70,15 L80,30 L90,20 L100,25 L110,35 L120,30 L130,10 L140,40 L150,30 L160,20 L170,40 L180,15 L190,35 L200,25 L210,30 L220,10 L230,35 L240,20 L250,30 L260,25 L270,15 L280,30 L290,25 L300,30' stroke='rgba(255,255,255,0.8)' stroke-width='2' fill='none' /%3E%3C/svg%3E");
-            background-repeat: repeat-x;
-            animation: chartMove 15s linear infinite;
-        }
-        
-        @keyframes chartMove {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-        
-        /* 사용 가이드 */
-        .usage-guide {
-            background: var(--guide-bg);
-            border-radius: 10px;
-            padding: 15px 20px;
-            margin-top: 15px;
-            color: #ffffff;
-        }
-        
-        .guide-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        
-        .guide-item {
-            margin-bottom: 10px;
-            padding-left: 30px;
-            position: relative;
-        }
-        
-        .guide-icon {
-            position: absolute;
-            left: 0;
-            top: 2px;
-            font-weight: bold;
-            color: #fcd34d;
-            font-size: 18px;
-        }
-        
-        .guide-text {
-            display: inline-block;
-            vertical-align: middle;
-        }
-        
-        /* 계산기 폼 */
-        .calculator-form {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-            width: 100%;
-        }
-        
-        .form-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            flex-wrap: wrap;
-        }
-        
-        .form-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: 600;
-            opacity: 0.7;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .form-tab.active {
-            opacity: 1;
-            border-bottom-color: var(--accent);
-            color: var(--accent);
-        }
-        
-        .tab-content {
-            display: none;
-            width: 100%;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-            width: 100%;
-        }
-        
-        .input-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: var(--card-bg);
-            color: var(--text);
-            -webkit-appearance: none; /* Safari 모바일에서 스타일 통일 */
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-        
-        /* 광고 컨테이너 - 마이너스 통장 계산기 스타일 참고 */
-        .ad-container {
-            border: 1px dashed rgba(128, 128, 128, 0.3);
-            border-radius: 5px;
-            padding: 10px;
-            margin: 15px 0;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.5);
-            max-width: 100%;
-            height: 290px; /* 고정된 높이 */
-            overflow: hidden; /* 오버플로우 숨김 */
-            position: relative;
-        }
-        
-        /* 광고 요소 제어 */
-        .ad-container .adsbygoogle,
-        .ad-container iframe {
-            max-width: 100% !important;
-            max-height: 100% !important;
-            overflow: hidden !important;
-        }
-        
-        /* 하단 광고 컨테이너 */
-        .bottom-ad-container {
-            margin-top: 20px;
-            height: 290px;
-        }
-        
-        /* 쿠팡 광고 컨테이너 */
-        .coupang-ad {
-            height: 300px;
-        }
-        
-        /* 버튼 스타일 */
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-top: 15px;
-            -webkit-appearance: none; /* Safari 모바일에서 스타일 통일 */
-        }
-        
-        .btn:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.4s;
-            z-index: -1;
-        }
-        
-        .btn:hover:before {
-            left: 0;
-        }
-        
-        .btn:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            transform: translateY(-3px);
-            background-color: var(--primary);
-        }
-        
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-secondary {
-            background-color: #6c757d;
-        }
-        
-        .btn-container {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn-container .btn {
-            flex: 1;
-        }
-        
-        /* 수수료 정보 테이블 */
-        .fees-container {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            -webkit-overflow-scrolling: touch; /* iOS 스크롤 부드럽게 */
-        }
-        
-        .fees-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 400px;
-        }
-        
-        .fees-table th,
-        .fees-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .fees-table th {
-            background-color: rgba(0, 0, 0, 0.05);
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-        }
-        
-        .fee-rate {
-            font-weight: 700;
-            color: var(--accent);
-            padding: 3px 8px;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 12px;
-            display: inline-block;
-            min-width: 60px;
-            text-align: center;
-        }
-        
-        /* 팝업 스타일 */
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .popup-content {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 25px;
-            position: relative;
-            animation: popupFadeIn 0.3s ease-out;
-        }
-        
-        @keyframes popupFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .popup-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--accent);
-            text-align: center;
-            position: relative;
-        }
-        
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        
-        .result-label {
-            font-weight: 600;
-        }
-        
-        .result-value {
-            font-weight: 700;
-        }
-        
-        .positive {
-            color: var(--profit);
-        }
-        
-        .negative {
-            color: var(--loss);
-        }
-        
-        /* 툴팁 */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            margin-left: 5px;
-        }
-        
-        .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background: var(--primary);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 10;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 14px;
-            font-weight: normal;
-            pointer-events: none;
-        }
-        
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        /* 버튼 반짝임 효과 */
-        @keyframes btnShine {
-            0% { transform: translateX(-100%) skewX(-15deg); }
-            100% { transform: translateX(200%) skewX(-15deg); }
-        }
-        
-        /* 모바일 반응형 */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .header-title {
-                font-size: 22px;
-            }
-            
-            .header-icon {
-                font-size: 24px;
-                width: 48px;
-                height: 48px;
-            }
-            
-            .calculator-form {
-                padding: 20px 15px;
-            }
-            
-            .form-tab {
-                padding: 8px 12px;
-                font-size: 14px;
-            }
-            
-            /* 수직 레이아웃으로 변경하면서 정렬 유지 */
-            .result-item {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            
-            .result-label {
-                font-size: 15px;
-            }
-            
-            .result-value {
-                text-align: right;
-                font-size: 15px;
-            }
-            
-            /* 모바일 입력 필드 최적화 */
-            .input-field {
-                font-size: 16px;
-                padding: 12px;
-            }
-            
-            /* 모바일 버튼 크기 최적화 */
-            .btn {
-                padding: 16px;
-                font-size: 16px;
-            }
-            
-            /* 모바일에서 버튼 배치 조정 */
-            .btn-container {
-                flex-direction: column;
-            }
-        }
-    </style>
-    <!-- 구글 애드센스 - 마이너스 통장 계산기와 같이 head에 배치 -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div class="container">
-        <!-- 헤더 영역 -->
-        <div class="header">
-            <div class="header-content">
-                <div>
-                    <div class="header-title">주식 수익률 계산기</div>
-                    <p style="color: #ffffff;">투자 수익률을 간단하게 계산하고 미래 수익을 예측해보세요!</p>
-                </div>
-                <div class="header-icon">
-                    📈
-                </div>
+<!-- 주식 수익률 계산기 -->
+<div id="sc-box" style="max-width: 100%; margin: 20px auto; font-family: sans-serif; background: linear-gradient(145deg,#e8e8e8,#f5f5f5); border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.15),inset 0 1px 1px rgba(255,255,255,0.6); border: 1px solid #d1d1d1;">
+<div style="text-align: center; margin-bottom: 15px;">
+<p style="font-size: 32px; margin: 0 0 10px; color: #4a4a4a; text-shadow: 0 1px 1px rgba(255,255,255,0.5);"><span style="font-size: 22px; font-weight: 600;">주식 수익률 계산기 📈</span></p>
+</div>
+
+<div style="background: linear-gradient(to bottom,#fff,#f9f9f9); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #d1d1d1; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+    <div style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">📊 증권 종류</label>
+        <select id="sc-market-type" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+            <option value="kospi">코스피</option>
+            <option value="kosdaq">코스닥</option>
+        </select>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">💰 평균 매수가</label>
+        <div style="position: relative;">
+            <input id="sc-buy-price" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" type="text" placeholder="평균 매수가 입력" />
+            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">원</span>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">🔢 주식 보유량</label>
+        <div style="position: relative;">
+            <input id="sc-quantity" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" type="text" placeholder="보유 수량 입력" />
+            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">주</span>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">📈 현재가</label>
+        <div style="position: relative;">
+            <input id="sc-current-price" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" type="text" placeholder="현재 주가 입력" />
+            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">원</span>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">🏦 증권사 선택</label>
+        <select id="sc-broker" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" onchange="updateCommission()">
+            <option value="direct">직접 입력</option>
+            <option value="0.01">NH투자증권 (나무증권) - 0.01%</option>
+            <option value="0.014">한국투자증권 - 0.014%</option>
+            <option value="0.014">신한투자증권 - 0.014%</option>
+            <option value="0.014">대신증권 - 0.014%</option>
+            <option value="0.015">키움증권 - 0.015%</option>
+            <option value="0.015">미래에셋증권 - 0.015%</option>
+            <option value="0.015">KB증권 - 0.015%</option>
+            <option value="0.015">유안타증권 - 0.015%</option>
+            <option value="0.015">하이투자증권 - 0.015%</option>
+            <option value="0.015">토스증권 - 0.015%</option>
+            <option value="0.015">카카오페이증권 - 0.015%</option>
+            <option value="0.147">삼성증권 - 0.147%</option>
+        </select>
+    </div>
+    
+    <div id="sc-commission-group" style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a4a4a;">📊 수수료 직접 입력</label>
+        <div style="position: relative;">
+            <input id="sc-commission" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 5px; box-sizing: border-box; background: #fffcf5; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);" step="0.001" type="number" placeholder="수수료율 입력" />
+            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #4a4a4a; font-weight: bold;">%</span>
+        </div>
+    </div>
+</div>
+
+<!-- 광고 영역 1 - 고정된 높이와 오버플로우 숨김 -->
+<div style="border: 1px dashed #888; border-radius: 5px; padding: 10px; margin: 10px 0; text-align: center; background: #f9f9f9; max-width: 100%; height: 280px; overflow: hidden; position: relative;">
+    <div style="font-size: 12px; color: #888; margin-bottom: 5px; font-weight: bold; text-align: center;"></div>
+    <div style="max-width: 100%; height: 250px; overflow: hidden; position: relative;">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203"></script>
+        <ins class="adsbygoogle" style="display: block; max-width: 100%; height: 250px; overflow: hidden;" data-ad-client="ca-pub-1274782176645203" data-ad-slot="1917070566" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    </div>
+</div>
+
+<button id="sc-calc-btn" style="width: 100%; background: linear-gradient(145deg,#5a5a5a,#3a3a3a); color: white; border: none; padding: 24px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.3); text-shadow: 0 1px 1px rgba(0,0,0,0.3); transition: all 0.3s; position: relative; overflow: hidden; z-index: 1;">계산하기</button>
+
+<div id="sc-result" style="display: none; margin-top: 20px; background: linear-gradient(to bottom,#fff,#f9f9f9); padding: 15px; border-radius: 8px; border: 1px solid #d1d1d1; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+    <div style="margin-bottom: 10px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;">
+        <div style="text-align: center; padding: 3px; margin-bottom: 3px;">
+            <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">투자 정보</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <div style="text-align: center; flex: 1; padding: 5px;">
+                <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">매수가</div>
+                <div id="sc-res-buy-price" style="font-weight: bold; color: #333;"></div>
             </div>
-            
-            <!-- 차트 애니메이션 -->
-            <div class="chart-container">
-                <div class="chart-animation"></div>
+            <div style="text-align: center; flex: 1; padding: 5px;">
+                <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">보유량</div>
+                <div id="sc-res-quantity" style="font-weight: bold; color: #333;"></div>
             </div>
-            
-            <!-- 사용 가이드 -->
-            <div class="usage-guide">
-                <div class="guide-title">ℹ️ 사용 가이드</div>
-                <div class="guide-item">
-                    <span class="guide-icon">📌</span>
-                    <span class="guide-text">증권 종류를 선택합니다 (코스피/코스닥)</span>
-                </div>
-                <div class="guide-item">
-                    <span class="guide-icon">📌</span>
-                    <span class="guide-text">평균 매수가와 보유량을 입력합니다</span>
-                </div>
-                <div class="guide-item">
-                    <span class="guide-icon">📌</span>
-                    <span class="guide-text">현재가를 입력합니다</span>
-                </div>
-                <div class="guide-item">
-                    <span class="guide-icon">📌</span>
-                    <span class="guide-text">증권사를 선택하거나 수수료율을 직접 입력합니다</span>
-                </div>
-                <div class="guide-item">
-                    <span class="guide-icon">📌</span>
-                    <span class="guide-text">계산하기 버튼을 눌러 수익률을 확인합니다</span>
-                </div>
+            <div style="text-align: center; flex: 1; padding: 5px;">
+                <div style="font-size: 13px; color: #4a4a4a; margin-bottom: 2px; font-weight: bold;">현재가</div>
+                <div id="sc-res-current-price" style="font-weight: bold; color: #333;"></div>
             </div>
         </div>
-        
-              
-        <!-- 계산기 폼 -->
-        <div class="calculator-form" id="calculatorForm">
-            <div class="form-tabs">
-                <div class="form-tab active" data-tab="calculator">계산기</div>
-                <div class="form-tab" data-tab="fee-info">증권사별 수수료</div>
-            </div>
-            
-            <div class="tab-content active" id="calculator">
-                <div class="input-group">
-                    <label for="marketType" class="input-label">증권 종류</label>
-                    <select id="marketType" class="input-field">
-                        <option value="kospi">코스피</option>
-                        <option value="kosdaq">코스닥</option>
-                    </select>
-                </div>
-                
-                <div class="input-group">
-                    <label for="avgBuyPrice" class="input-label">
-                        평균 매수가 (원)
-                        <span class="tooltip">
-                            ❓
-                            <span class="tooltip-text">주식을 매수했던 평균 가격을 입력하세요</span>
-                        </span>
-                    </label>
-                    <input type="tel" id="avgBuyPrice" class="input-field" placeholder="예: 50,000" oninput="formatNumber(this)">
-                </div>
-                
-                <div class="input-group">
-                    <label for="stockQuantity" class="input-label">
-                        주식 보유량 (주)
-                        <span class="tooltip">
-                            ❓
-                            <span class="tooltip-text">보유중인 주식의 수량을 입력하세요</span>
-                        </span>
-                    </label>
-                    <input type="tel" id="stockQuantity" class="input-field" placeholder="예: 100" oninput="formatNumber(this)">
-                </div>
-                
-                <div class="input-group">
-                    <label for="currentPrice" class="input-label">
-                        주식 현재가 (원)
-                        <span class="tooltip">
-                            ❓
-                            <span class="tooltip-text">현재 주식의 시장 가격을 입력하세요</span>
-                        </span>
-                    </label>
-                    <input type="tel" id="currentPrice" class="input-field" placeholder="예: 55,000" oninput="formatNumber(this)">
-                </div>
-                
-                <div class="input-group">
-                    <label for="brokerSelect" class="input-label">
-                        증권사 선택
-                        <span class="tooltip">
-                            ❓
-                            <span class="tooltip-text">거래에 사용하는 증권사를 선택하면 해당 수수료가 자동 적용됩니다.</span>
-                        </span>
-                    </label>
-                    <select id="brokerSelect" class="input-field" onchange="updateCommission()">
-                        <option value="direct">직접 입력</option>
-                        <option value="0.01">NH투자증권 (나무증권) - 0.01%</option>
-                        <option value="0.014">한국투자증권 - 0.014%</option>
-                        <option value="0.014">신한투자증권 - 0.014%</option>
-                        <option value="0.014">대신증권 - 0.014%</option>
-                        <option value="0.015">키움증권 - 0.015%</option>
-                        <option value="0.015">미래에셋증권 - 0.015%</option>
-                        <option value="0.015">KB증권 - 0.015%</option>
-                        <option value="0.015">유안타증권 - 0.015%</option>
-                        <option value="0.015">하이투자증권 - 0.015%</option>
-                        <option value="0.015">토스증권 - 0.015%</option>
-                        <option value="0.015">카카오페이증권 - 0.015%</option>
-                        <option value="0.147">삼성증권 - 0.147%</option>
-                    </select>
-                </div>
-                
-                <div class="input-group" id="customCommissionGroup">
-                    <label for="commission" class="input-label">
-                        수수료 직접 입력 (%)
-                        <span class="tooltip">
-                            ❓
-                            <span class="tooltip-text">거래시 적용되는 수수료율을 직접 입력하세요. 일반적으로 0.015~0.35% 범위입니다.</span>
-                        </span>
-                    </label>
-                    <input type="number" id="commission" class="input-field" step="0.001" placeholder="예: 0.015">
-                </div>
-                
-                <!-- 계산 버튼 위 광고 - 마이너스 통장 계산기와 유사한 구조 -->
-                <div class="ad-container">
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                    <ins class="adsbygoogle"
-                         style="display: block; max-width: 100%; height: 250px; overflow: hidden;"
-                         data-ad-client="ca-pub-1274782176645203"
-                         data-ad-slot="1917070566"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                </div>
-                
-                <button class="btn" onclick="calculateProfit()">
-                    🧮 계산하기
-                </button>
-            </div>
-            
-            <!-- 수수료 정보 탭 -->
-            <div class="tab-content" id="fee-info">
-                <div style="font-weight: 600; margin-bottom: 15px; font-size: 18px;">
-                    🏦 국내 주요 증권사 수수료율 (2025년 기준)
-                </div>
-                
-                <div class="fees-container">
-                    <table class="fees-table">
-                        <thead>
-                            <tr>
-                                <th>증권사</th>
-                                <th>수수료율</th>
-                                <th>그룹</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>NH투자증권 (나무증권)</td>
-                                <td><span class="fee-rate">0.01%</span></td>
-                                <td>최저</td>
-                            </tr>
-                            <tr>
-                                <td>한국투자증권</td>
-                                <td><span class="fee-rate">0.014%</span></td>
-                                <td>저수수료</td>
-                            </tr>
-                            <tr>
-                                <td>신한투자증권</td>
-                                <td><span class="fee-rate">0.014%</span></td>
-                                <td>저수수료</td>
-                            </tr>
-                            <tr>
-                                <td>대신증권</td>
-                                <td><span class="fee-rate">0.014%</span></td>
-                                <td>저수수료</td>
-                            </tr>
-                            <tr>
-                                <td>키움증권</td>
-                                <td><span class="fee-rate">0.015%</span></td>
-                                <td>표준</td>
-                            </tr>
-                            <tr>
-                                <td>미래에셋증권</td>
-                                <td><span class="fee-rate">0.015%</span></td>
-                                <td>표준</td>
-                            </tr>
-                            <tr>
-                                <td>KB증권</td>
-                                <td><span class="fee-rate">0.015%</span></td>
-                                <td>표준</td>
-                            </tr>
-                            <tr>
-                                <td>유안타증권</td>
-                                <td><span class="fee-rate">0.015%</span></td>
-                                <td>표준</td>
-                            </tr>
-                            <tr>
-                                <td>하이투자증권</td>
-                                <td><span class="fee-rate">0.015%</span></td>
-                                <td>표준</td>
-                            </tr>
-                            <tr>
-                                <td>토스증권</td>
-                                <td><span class="fee-rate">0.015%</span></td>
-                                <td>표준</td>
-                            </tr>
-                            <tr>
-                                <td>카카오페이증권</td>
-                                <td><span class="fee-rate">0.015%</span></td>
-                                <td>표준</td>
-                            </tr>
-                            <tr>
-                                <td>삼성증권</td>
-                                <td><span class="fee-rate">0.147%</span></td>
-                                <td>고수수료</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div style="font-size: 14px; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 10px;">
-                    ℹ️ 위 수수료율은 온라인 거래(HTS/MTS) 기준이며, 이벤트 우대 제외 기본값입니다. 정확한 수치는 각 증권사 홈페이지를 확인하세요.
-                </div>
-            </div>
-        </div>
-        
-        <!-- 하단 광고 영역 - 마이너스 통장 계산기와 유사한 구조 -->
-        <div class="ad-container bottom-ad-container">
-            <div style="font-size: 18px; color: #555; margin-bottom: 5px; font-weight: bold; text-align: center;">✨ 추천 상품</div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
+        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">매수 금액</div>
+        <div id="sc-res-buy-amount" style="font-size: 20px; font-weight: bold; color: #333; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
+        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">매도 금액</div>
+        <div id="sc-res-sell-amount" style="font-size: 20px; font-weight: bold; color: #333; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
+        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">수익률</div>
+        <div id="sc-res-rate" style="font-size: 24px; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: linear-gradient(145deg,#f0f0f0,#fdfdfd); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
+        <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 3px; font-weight: bold;">수익 금액</div>
+        <div id="sc-res-profit" style="font-size: 24px; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.7);"></div>
+    </div>
+    
+    <!-- 광고 영역 2 - 고정된 높이와 오버플로우 숨김 -->
+    <div style="border: 1px dashed #888; border-radius: 5px; padding: 10px; margin: 15px 0; text-align: center; background: #f9f9f9; max-width: 100%; height: 320px; overflow: hidden; position: relative;">
+        <div style="font-size: 18px; color: #4a4a4a; margin-bottom: -20px; font-weight: bold; text-align: center;">✨ 오늘의 특가제품</div>
+        <div style="max-width: 100%; height: 290px; overflow: hidden; position: relative;">
             <script src="https://ads-partners.coupang.com/g.js"></script>
             <script>
-                new PartnersCoupang.G({
-                    "id": 764221,
-                    "template": "carousel",
-                    "trackingCode": "AF7962515",
-                    "width": "100%",
-                    "height": "250"
-                });
+              new PartnersCoupang.G({
+                "id":764221,
+                "template":"carousel",
+                "trackingCode":"AF7962515",
+                "width":"100%",
+                "height":"280",
+                "tsource":""
+              });
             </script>
         </div>
     </div>
     
-    <!-- 팝업 결과창 -->
-    <div class="popup-overlay" id="resultPopup">
-        <div class="popup-content">
-            <div class="popup-title">
-                📊 주식 수익률 계산 결과
-            </div>
-            
-            <div class="result-item">
-                <div class="result-label">매수 금액</div>
-                <div class="result-value" id="buyAmount">0 원</div>
-            </div>
-            
-            <div class="result-item">
-                <div class="result-label">매도 금액</div>
-                <div class="result-value" id="sellAmount">0 원</div>
-            </div>
-            
-            <div class="result-item">
-                <div class="result-label">수익률</div>
-                <div class="result-value" id="profitRate">0.00 %</div>
-            </div>
-            
-            <div class="result-item">
-                <div class="result-label">수익 금액</div>
-                <div class="result-value" id="profitAmount">0 원</div>
-            </div>
-            
-            <!-- 결과 화면 광고 - 마이너스 통장 계산기와 유사한 구조 -->
-            <div class="ad-container">
-            <script src="https://ads-partners.coupang.com/g.js"></script>
-<script>
-	new PartnersCoupang.G({"id":632732,"template":"carousel","trackingCode":"AF9512637","width":"100%","height":"250","tsource":""});
-</script>
-            </div>
-            
-            <div class="btn-container">
-                <button class="btn" onclick="resetForm()">
-                    🔄 다시 계산하기
-                </button>
-                <button class="btn btn-secondary" onclick="closePopup()">
-                    ✖️ 창 닫기
-                </button>
-            </div>
-        </div>
-    </div>
+    <button id="sc-reset-btn" style="width: 100%; background: linear-gradient(145deg,#c14040,#9e2a2a); color: white; border: none; padding: 24px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.3); transition: all 0.3s; position: relative; overflow: hidden; z-index: 1; margin-top: 15px;">다시 계산하기</button>
+</div>
 
-    <script>
-        // 광고 로딩 최적화 및 강제 초기화 - 마이너스 통장 계산기 방식 참고
-        window.onload = function() {
-            setTimeout(function() {
-                // 페이지 내 모든 광고 초기화
-                var adElements = document.querySelectorAll('.adsbygoogle');
-                for (var i = 0; i < adElements.length; i++) {
-                    try {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    } catch (e) {
-                        console.log('AdSense 초기화 중 오류:', e);
-                    }
-                }
-            }, 100);
-        };
-        
-        // 버튼 반짝임 효과 추가
-        function addShineEffect(btn) {
-            btn.addEventListener('mouseover', function() {
-                let shine = document.createElement('div');
-                shine.style.position = 'absolute';
-                shine.style.top = '0';
-                shine.style.left = '0';
-                shine.style.width = '30px';
-                shine.style.height = '100%';
-                shine.style.background = 'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)';
-                shine.style.transform = 'translateX(-100%) skewX(-15deg)';
-                shine.style.animation = 'btnShine 1.5s infinite';
-                this.appendChild(shine);
-            });
-            
-            btn.addEventListener('mouseout', function() {
-                let shines = this.querySelectorAll('div');
-                shines.forEach(shine => shine.remove());
-            });
-        }
-        
-        // 탭 전환 기능
-        document.addEventListener('DOMContentLoaded', function() {
-            // 버튼에 효과 추가
-            const calcBtn = document.querySelector('.btn');
-            const resetBtn = document.querySelector('.btn');
-            addShineEffect(calcBtn);
-            addShineEffect(resetBtn);
-            
-            // 탭 클릭 이벤트 리스너 등록
-            const tabs = document.querySelectorAll('.form-tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // 모든 탭에서 active 클래스 제거
-                    tabs.forEach(t => t.classList.remove('active'));
-                    
-                    // 현재 클릭한 탭에 active 클래스 추가
-                    this.classList.add('active');
-                    
-                    // 모든 탭 컨텐츠 숨기기
-                    const tabContents = document.querySelectorAll('.tab-content');
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // 선택한 탭의 컨텐츠 표시
-                    const targetTab = this.getAttribute('data-tab');
-                    document.getElementById(targetTab).classList.add('active');
-                });
-            });
-            
-            // 초기 설정: 증권사 선택에 따라 수수료 입력란 상태 업데이트
-            updateCommission();
-            
-            // 모바일 탭 터치 최적화
-            const formTabs = document.querySelectorAll('.form-tab');
-            formTabs.forEach(tab => {
-                tab.addEventListener('touchstart', function() {
-                    this.style.backgroundColor = 'rgba(0,0,0,0.05)';
-                });
-                
-                tab.addEventListener('touchend', function() {
-                    this.style.backgroundColor = '';
-                });
-            });
+<style>
+    @keyframes scShine {
+      0% { transform: translateX(-100%) skewX(-15deg); }
+      100% { transform: translateX(200%) skewX(-15deg); }
+    }
+    
+    /* 광고 영역 통제를 위한 스타일 */
+    #sc-box .adsbygoogle,
+    #sc-box iframe {
+      max-width: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+</style>
+
+<script>
+(function(){
+    // 숫자 포맷팅 함수
+    function formatNumber(e){
+        let v=e.value.replace(/[^\d]/g,'');
+        e.value=v?parseInt(v).toLocaleString():'';
+    }
+    
+    // 숫자 추출 함수
+    function extractNumber(v){
+        return v?parseFloat(v.replace(/,/g,'')):0;
+    }
+    
+    // 버튼 효과 추가 함수
+    function addShineEffect(btn){
+        btn.addEventListener('mouseover',function(){
+            let shine=document.createElement('div');
+            shine.style.position='absolute';
+            shine.style.top='0';
+            shine.style.left='0';
+            shine.style.width='30px';
+            shine.style.height='100%';
+            shine.style.background='linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(255,255,255,0) 100%)';
+            shine.style.transform='translateX(-100%) skewX(-15deg)';
+            shine.style.animation='scShine 1.5s infinite';
+            this.appendChild(shine);
         });
         
-        // 숫자 포맷팅 (천 단위 콤마 추가)
-        function formatNumber(input) {
-            // 입력 값에서 콤마 제거
-            let value = input.value.replace(/,/g, '');
-            
-            // 숫자만 허용
-            value = value.replace(/[^0-9]/g, '');
-            
-            // 천 단위 콤마 추가
-            if (value) {
-                value = parseInt(value).toLocaleString();
-            }
-            
-            // 포맷된 값으로 업데이트
-            input.value = value;
+        btn.addEventListener('mouseout',function(){
+            let shines=this.querySelectorAll('div');
+            shines.forEach(shine=>shine.remove());
+        });
+    }
+    
+    // 버튼 효과 설정
+    const calcBtn=document.getElementById('sc-calc-btn');
+    const resetBtn=document.getElementById('sc-reset-btn');
+    
+    // 호버 효과
+    calcBtn.addEventListener('mouseover',function(){
+        this.style.boxShadow='0 5px 10px rgba(0,0,0,0.4)';
+        this.style.transform='translateY(-2px)';
+    });
+    
+    calcBtn.addEventListener('mouseout',function(){
+        this.style.boxShadow='0 3px 6px rgba(0,0,0,0.3)';
+        this.style.transform='translateY(0)';
+    });
+    
+    resetBtn.addEventListener('mouseover',function(){
+        this.style.boxShadow='0 5px 10px rgba(0,0,0,0.3)';
+        this.style.transform='translateY(-2px)';
+    });
+    
+    resetBtn.addEventListener('mouseout',function(){
+        this.style.boxShadow='0 3px 6px rgba(0,0,0,0.2)';
+        this.style.transform='translateY(0)';
+    });
+    
+    // 반짝임 효과 추가
+    addShineEffect(calcBtn);
+    addShineEffect(resetBtn);
+    
+    // 증권사 선택에 따른 수수료 입력란 표시 여부
+    window.updateCommission = function(){
+        const brokerSelect=document.getElementById('sc-broker');
+        const commissionGroup=document.getElementById('sc-commission-group');
+        const commissionInput=document.getElementById('sc-commission');
+        
+        if(brokerSelect.value==='direct'){
+            commissionGroup.style.display='block';
+        } else {
+            commissionGroup.style.display='none';
+            commissionInput.value=brokerSelect.value;
+        }
+    };
+    
+    // 계산하기 버튼 클릭 이벤트
+    calcBtn.onclick=function(){
+        const avgBuyPrice=extractNumber(document.getElementById('sc-buy-price').value);
+        const stockQuantity=extractNumber(document.getElementById('sc-quantity').value);
+        const currentPrice=extractNumber(document.getElementById('sc-current-price').value);
+        const commissionRate=parseFloat(document.getElementById('sc-commission').value || document.getElementById('sc-broker').value)/100;
+        
+        // 입력값 검증
+        if(!avgBuyPrice || !stockQuantity || !currentPrice){
+            alert('모든 필드를 입력해주세요.');
+            return;
         }
         
-        // 문자열에서 숫자만 추출 (계산용)
-        function extractNumber(str) {
-            return parseFloat(str.replace(/,/g, '')) || 0;
+        // 계산
+        const buyAmount=avgBuyPrice*stockQuantity;
+        const sellAmountBeforeFee=currentPrice*stockQuantity;
+        const sellFee=sellAmountBeforeFee*commissionRate;
+        const sellAmount=sellAmountBeforeFee-sellFee;
+        const profitAmount=sellAmount-buyAmount;
+        const profitRate=(profitAmount/buyAmount)*100;
+        
+        // 결과 표시
+        document.getElementById('sc-res-buy-price').textContent=avgBuyPrice.toLocaleString()+'원';
+        document.getElementById('sc-res-quantity').textContent=stockQuantity.toLocaleString()+'주';
+        document.getElementById('sc-res-current-price').textContent=currentPrice.toLocaleString()+'원';
+        document.getElementById('sc-res-buy-amount').textContent=buyAmount.toLocaleString()+'원';
+        document.getElementById('sc-res-sell-amount').textContent=sellAmount.toLocaleString()+'원';
+        
+        const rateElement=document.getElementById('sc-res-rate');
+        rateElement.textContent=profitRate.toFixed(2)+'%';
+        
+        const profitElement=document.getElementById('sc-res-profit');
+        profitElement.textContent=profitAmount.toLocaleString()+'원';
+        
+        // 수익/손실에 따른 색상 적용
+        if(profitAmount>0){
+            rateElement.style.color='#ef4444';
+            profitElement.style.color='#ef4444';
+        } else {
+            rateElement.style.color='#3b82f6';
+            profitElement.style.color='#3b82f6';
         }
+        
+        // 결과 표시
+        document.getElementById('sc-result').style.display='block';
+        
+        // 결과 영역으로 스크롤
+        window.scrollTo({
+            top: document.getElementById('sc-result').offsetTop-10,
+            behavior: 'smooth'
+        });
+        
+        // 광고 새로고침 시도
+        try {
+            (adsbygoogle=window.adsbygoogle||[]).push({});
+        } catch(e){
+            console.log('광고 새로고침 오류:',e);
+        }
+    };
+    
+    // 다시 계산하기 버튼 클릭 이벤트
+    resetBtn.onclick=function(){
+        document.getElementById('sc-buy-price').value='';
+        document.getElementById('sc-quantity').value='';
+        document.getElementById('sc-current-price').value='';
+        document.getElementById('sc-broker').value='direct';
+        document.getElementById('sc-commission').value='';
+        document.getElementById('sc-result').style.display='none';
+        
+        // 상단으로 스크롤
+        window.scrollTo({
+            top: document.getElementById('sc-box').offsetTop-10,
+            behavior: 'smooth'
+        });
         
         // 증권사 선택에 따른 수수료 입력란 상태 업데이트
-        function updateCommission() {
-            const brokerSelect = document.getElementById('brokerSelect');
-            const customCommissionGroup = document.getElementById('customCommissionGroup');
-            const commissionInput = document.getElementById('commission');
-            
-            if (brokerSelect.value === 'direct') {
-                // 직접 입력 선택 시 수수료 입력란 표시
-                customCommissionGroup.style.display = 'block';
-            } else {
-                // 증권사 선택 시 수수료 입력란 숨기고 선택된 값으로 설정
-                customCommissionGroup.style.display = 'none';
-                commissionInput.value = brokerSelect.value;
-            }
-        }
-        
-        // 팝업 열기
-        function openPopup() {
-            document.getElementById('resultPopup').style.display = 'flex';
-            
-            // 팝업 광고 새로고침
-            try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (e) {
-                console.log('팝업 광고 새로고침 오류:', e);
-            }
-            
-            // 스크롤 비활성화
-            document.body.style.overflow = 'hidden';
-        }
-        
-        // 팝업 닫기
-        function closePopup() {
-            document.getElementById('resultPopup').style.display = 'none';
-            
-            // 스크롤 활성화
-            document.body.style.overflow = 'auto';
-        }
-        
-        // 수익률 계산 함수
-        function calculateProfit() {
-            // 입력값 가져오기
-            const avgBuyPrice = extractNumber(document.getElementById('avgBuyPrice').value);
-            const stockQuantity = extractNumber(document.getElementById('stockQuantity').value);
-            const currentPrice = extractNumber(document.getElementById('currentPrice').value);
-            const commissionRate = parseFloat(document.getElementById('commission').value || document.getElementById('brokerSelect').value) / 100;
-            
-            // 입력값 검증
-            if (!avgBuyPrice || !stockQuantity || !currentPrice) {
-                alert('모든 항목을 정확히 입력해주세요.');
-                return;
-            }
-            
-            // 매수 금액 계산
-            const buyAmount = avgBuyPrice * stockQuantity;
-            
-            // 매도 금액 계산 (수수료 차감)
-            const sellAmountBeforeFee = currentPrice * stockQuantity;
-            const sellFee = sellAmountBeforeFee * commissionRate;
-            const sellAmount = sellAmountBeforeFee - sellFee;
-            
-            // 수익 금액 계산
-            const profitAmount = sellAmount - buyAmount;
-            
-            // 수익률 계산
-            const profitRate = (profitAmount / buyAmount) * 100;
-            
-            // 결과 표시
-            document.getElementById('buyAmount').textContent = buyAmount.toLocaleString() + ' 원';
-            document.getElementById('sellAmount').textContent = sellAmount.toLocaleString() + ' 원';
-            document.getElementById('profitAmount').textContent = profitAmount.toLocaleString() + ' 원';
-            document.getElementById('profitRate').textContent = profitRate.toFixed(2) + ' %';
-            
-            // 수익/손실에 따른 색상 적용
-            if (profitAmount > 0) {
-                document.getElementById('profitAmount').classList.add('positive');
-                document.getElementById('profitAmount').classList.remove('negative');
-                document.getElementById('profitRate').classList.add('positive');
-                document.getElementById('profitRate').classList.remove('negative');
-            } else {
-                document.getElementById('profitAmount').classList.add('negative');
-                document.getElementById('profitAmount').classList.remove('positive');
-                document.getElementById('profitRate').classList.add('negative');
-                document.getElementById('profitRate').classList.remove('positive');
-            }
-            
-            // 팝업창 표시
-            openPopup();
-            
-            // 광고 새로고침 시도
-            try {
-                setTimeout(function() {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                }, 200);
-            } catch (e) {
-                console.log('광고 새로고침 오류:', e);
-            }
-        }
-        
-        // 초기화 및 다시 계산하기
-        function resetForm() {
-            // 입력 필드 초기화
-            document.getElementById('avgBuyPrice').value = '';
-            document.getElementById('stockQuantity').value = '';
-            document.getElementById('currentPrice').value = '';
-            document.getElementById('brokerSelect').value = 'direct';
-            document.getElementById('commission').value = '';
-            
-            // 증권사 선택에 따른 수수료 입력란 상태 업데이트
-            updateCommission();
-            
-            // 팝업 닫기
-            closePopup();
-            
-            // 첫 번째 입력 필드에 포커스
-            setTimeout(() => {
-                document.getElementById('avgBuyPrice').focus();
-            }, 300);
-        }
-    </script>
-</body>
-</html>
+        updateCommission();
+    };
+    
+    // 숫자 입력 필드에 포맷팅 이벤트 추가
+    ['sc-buy-price','sc-quantity','sc-current-price'].forEach(i=>
+        document.getElementById(i).addEventListener('input',function(){
+            formatNumber(this);
+        })
+    );
+    
+    // 초기 설정
+    updateCommission();
+})();
+</script>
+</div>
