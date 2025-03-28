@@ -1,0 +1,446 @@
+/* 기본 테마 설정 (메탈실버 테마) */
+#stockCalc {
+    --primary: #7a7a7a;
+    --secondary: #5a5a5a;
+    --accent: #4a4a4a;
+    --background: #e6e6e6;
+    --card-bg: #f5f5f5;
+    --text: #2c2c2c;
+    --header-gradient: linear-gradient(135deg, #c0c0c0, #8e8e8e);
+    --header-text: #ffffff;
+    --profit: #ef4444;
+    --loss: #3b82f6;
+}
+
+/* 기본 스타일 */
+#stockCalc * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+}
+
+#stockCalc {
+    width: 100%;
+    max-width: 800px; /* 최대 너비 지정 */
+    margin: 0 auto; /* 가운데 정렬 */
+    padding: 20px;
+    border-radius: 15px;
+    background-color: var(--background);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow: visible; /* 내용 넘침 허용 */
+    box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+}
+
+/* 헤더 영역 */
+#stockCalc .header {
+    background: var(--header-gradient);
+    color: var(--header-text);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+#stockCalc .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#stockCalc .header-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+#stockCalc .header-icon {
+    font-size: 36px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+/* 차트 영역 */
+#stockCalc .chart-container {
+    margin-top: 15px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+#stockCalc .chart-animation {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='60' viewBox='0 0 300 60'%3E%3Cpath d='M0,30 L10,20 L20,40 L30,10 L40,30 L50,25 L60,35 L70,15 L80,30 L90,20 L100,25 L110,35 L120,30 L130,10 L140,40 L150,30 L160,20 L170,40 L180,15 L190,35 L200,25 L210,30 L220,10 L230,35 L240,20 L250,30 L260,25 L270,15 L280,30 L290,25 L300,30' stroke='rgba(255,255,255,0.8)' stroke-width='2' fill='none' /%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    animation: chartMove 15s linear infinite;
+}
+
+@keyframes chartMove {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* 사용 가이드 */
+#stockCalc .usage-guide {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-top: 15px;
+}
+
+#stockCalc .guide-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#stockCalc .guide-item {
+    margin-bottom: 10px;
+    padding-left: 30px;
+    position: relative;
+}
+
+#stockCalc .guide-icon {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    font-weight: bold;
+    color: #fcd34d;
+    font-size: 18px;
+}
+
+#stockCalc .guide-text {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* 계산기 폼 */
+#stockCalc .calculator-form {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+#stockCalc .form-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap; /* 모바일에서 탭 줄바꿈 허용 */
+}
+
+#stockCalc .form-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    opacity: 0.7;
+    border-bottom: 2px solid transparent;
+}
+
+#stockCalc .form-tab.active {
+    opacity: 1;
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+}
+
+#stockCalc .tab-content {
+    display: none;
+}
+
+#stockCalc .tab-content.active {
+    display: block;
+}
+
+#stockCalc .input-group {
+    margin-bottom: 20px;
+}
+
+#stockCalc .input-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+#stockCalc .input-field {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: var(--card-bg);
+    color: var(--text);
+}
+
+#stockCalc .input-field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+#stockCalc .calculate-btn {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+#stockCalc .calculate-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.4s;
+    z-index: -1;
+}
+
+#stockCalc .calculate-btn:hover:before {
+    left: 0;
+}
+
+#stockCalc .calculate-btn:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+#stockCalc .calculate-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 수수료 정보 테이블 */
+#stockCalc .fees-container {
+    width: 100%;
+    overflow-x: auto; /* 가로 스크롤 허용 */
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+#stockCalc .fees-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 400px; /* 최소 테이블 너비 설정 */
+}
+
+#stockCalc .fees-table th,
+#stockCalc .fees-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#stockCalc .fees-table th {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+    position: sticky;
+    top: 0; /* 스크롤 시 헤더 고정 */
+}
+
+#stockCalc .fee-rate {
+    font-weight: 700;
+    color: var(--accent);
+    padding: 3px 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* 결과 영역 */
+#stockCalc .result-container {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    display: none;
+}
+
+#stockCalc .result-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--accent);
+}
+
+#stockCalc .result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+#stockCalc .result-label {
+    font-weight: 600;
+}
+
+#stockCalc .result-value {
+    font-weight: 700;
+}
+
+#stockCalc .positive {
+    color: var(--profit);
+}
+
+#stockCalc .negative {
+    color: var(--loss);
+}
+
+#stockCalc .recalculate-btn {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+#stockCalc .recalculate-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.4s;
+    z-index: -1;
+}
+
+#stockCalc .recalculate-btn:hover:before {
+    left: 0;
+}
+
+#stockCalc .recalculate-btn:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+#stockCalc .recalculate-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 광고 영역 */
+#stockCalc .ad-container {
+    margin: 0; /* 간격 제거 */
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+    text-align: center;
+    overflow: hidden !important; /* 광고 넘침 방지 */
+    max-width: 100%; /* 컨테이너 너비 제한 */
+    max-height: 300px; /* 높이 제한 */
+}
+
+/* 툴팁 */
+#stockCalc .tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+#stockCalc .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#stockCalc .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    #stockCalc {
+        padding: 15px;
+        max-width: 100%; /* 모바일에서 전체 너비 사용 */
+    }
+    
+    #stockCalc .header {
+        padding: 20px;
+    }
+    
+    #stockCalc .header-title {
+        font-size: 22px;
+    }
+    
+    #stockCalc .header-icon {
+        font-size: 24px;
+        width: 48px;
+        height: 48px;
+    }
+    
+    #stockCalc .calculator-form {
+        padding: 15px;
+    }
+    
+    #stockCalc .form-tab {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    /* 결과 아이템 반응형 조정 */
+    #stockCalc .result-item {
+        flex-direction: column;
+        padding: 12px;
+    }
+    
+    #stockCalc .result-value {
+        margin-top: 5px;
+    }
+}
