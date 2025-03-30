@@ -5,380 +5,714 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주식 수익률 계산기</title>
     <style>
-        * {
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Pretendard', sans-serif;
         }
-        body {
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
-        #sc-box {
-            width: 100%;
-            max-width: 480px;
-            background: linear-gradient(145deg, #d4af37, #b98c2a);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 
-                0 15px 30px rgba(0,0,0,0.2), 
-                inset 0 -5px 10px rgba(255,255,255,0.1),
-                inset 0 5px 10px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .embossed-text {
-            text-shadow: 
-                -1px -1px 0 rgba(0,0,0,0.2), 
-                 1px 1px 0 rgba(255,255,255,0.3);
-            color: #4a4a4a;
-        }
-        .input-container {
-            background: linear-gradient(145deg, #c4a032, #a98c2a);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 
-                inset 0 -3px 6px rgba(0,0,0,0.1), 
-                inset 0 3px 6px rgba(255,255,255,0.1);
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #f0e68c;
-            text-shadow: 
-                -1px -1px 0 rgba(0,0,0,0.3), 
-                 1px 1px 0 rgba(255,255,255,0.2);
-        }
-        select, input {
-            width: 100%;
-            padding: 12px;
-            border: none;
+        
+        .container {
+            width: 98%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: linear-gradient(145deg,#e6e8e9,#f5f6f7);
             border-radius: 10px;
-            background: linear-gradient(145deg, #e0c040, #c0a030);
-            color: #4a4a4a;
-            font-size: 16px;
-            box-shadow: 
-                inset 0 -3px 6px rgba(0,0,0,0.2), 
-                inset 0 3px 6px rgba(255,255,255,0.1);
-            text-align: right;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border: 1px solid #c0c5c9;
         }
-        select option {
-            background: #f0e68c;
-            color: #4a4a4a;
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .btn {
+        
+        .header h1 {
+            font-size: 24px;
+            color: #445566;
+            margin: 0;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
             width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            font-size: 18px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-shadow: 
-                -1px -1px 0 rgba(0,0,0,0.3), 
-                 1px 1px 0 rgba(255,255,255,0.2);
-        }
-        #sc-calc-btn {
-            background: linear-gradient(145deg, #4a4a4a, #2a2a2a);
-            color: #f0e68c;
-            margin-top: 20px;
-            box-shadow: 
-                0 5px 15px rgba(0,0,0,0.3), 
-                inset 0 -3px 6px rgba(0,0,0,0.2), 
-                inset 0 3px 6px rgba(255,255,255,0.1);
-        }
-        #sc-calc-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 8px 20px rgba(0,0,0,0.4), 
-                inset 0 -3px 6px rgba(0,0,0,0.2), 
-                inset 0 3px 6px rgba(255,255,255,0.1);
-        }
-        #sc-result {
-            display: none;
-            background: linear-gradient(145deg, #c4a032, #a98c2a);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 
-                0 10px 20px rgba(0,0,0,0.2), 
-                inset 0 -5px 10px rgba(255,255,255,0.1),
-                inset 0 5px 10px rgba(0,0,0,0.1);
-        }
-        .result-section {
-            background: linear-gradient(145deg, #e0c040, #c0a030);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border: 1px solid #c0c5c9;
             text-align: center;
-            box-shadow: 
-                inset 0 -3px 6px rgba(0,0,0,0.1), 
-                inset 0 3px 6px rgba(255,255,255,0.1);
+            transition: all 0.3s;
         }
-        #sc-reset-btn {
-            background: linear-gradient(145deg, #c14040, #9e2a2a);
-            color: #f0e68c;
+        
+        .tab-btn:first-child {
+            border-radius: 5px 0 0 5px;
+        }
+        
+        .tab-btn:last-child {
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(145deg,#5b6d80,#445566);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .tab-btn:not(.active) {
+            background: #e6e8e9;
+            color: #667788;
+        }
+        
+        .tab-content {
+            display: none;
+            width: 100%;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .calculator-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #c0c5c9;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #445566;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .input-wrapper input, 
+        .input-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            font-size: 16px;
+            border: 1px solid #c0c5c9;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background: #fcfdfe;
+        }
+        
+        .input-wrapper .unit {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #445566;
+            font-weight: bold;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .calc-btn {
+            background: linear-gradient(145deg,#5b6d80,#445566);
+            color: white;
+            margin-top: 15px;
+            box-shadow: 0 3px 6px rgba(68,85,102,0.3);
+        }
+        
+        .reset-btn {
+            background: linear-gradient(145deg,#c14040,#9e2a2a);
+            color: white;
+            margin-top: 15px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        
+        button:hover {
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .result-section {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
             margin-top: 20px;
-            box-shadow: 
-                0 5px 15px rgba(0,0,0,0.3), 
-                inset 0 -3px 6px rgba(0,0,0,0.2), 
-                inset 0 3px 6px rgba(255,255,255,0.1);
+            border: 1px solid #c0c5c9;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            display: none;
+            width: 100%;
+            box-sizing: border-box;
         }
-        #sc-reset-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 8px 20px rgba(0,0,0,0.4), 
-                inset 0 -3px 6px rgba(0,0,0,0.2), 
-                inset 0 3px 6px rgba(255,255,255,0.1);
+        
+        .result-summary {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #d6dde4;
+            padding-bottom: 8px;
         }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .result-label {
+            font-size: 13px;
+            color: #445566;
+            font-weight: bold;
+        }
+        
+        .result-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .result-highlight {
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            background: linear-gradient(145deg,#eef0f2,#f8f9fa);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #d6dde4;
+        }
+        
+        .result-highlight-label {
+            font-size: 14px;
+            color: #445566;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+        
+        .result-highlight-value {
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.7);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            color: #445566;
+            font-weight: bold;
+            background: #e6e8e9;
+            border-bottom: 2px solid #c0c5c9;
+        }
+        
+        td {
+            padding: 12px 15px;
+            color: #333;
+            border-bottom: 1px solid #d6dde4;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
         .ad-container {
-            margin-top: 20px;
-            border-radius: 10px;
+            border: 1px dashed #a0a8b0;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 15px 0;
+            text-align: center;
+            background: #f8f9fa;
+            width: 100%;
+            box-sizing: border-box;
             overflow: hidden;
+            position: relative;
+        }
+        
+        .ad-title {
+            font-size: 18px;
+            color: #445566;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .fee-note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            border: 1px solid #d6dde4;
+        }
+        
+        .fee-note h4 {
+            color: #445566;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .fee-note ul {
+            color: #667788;
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .fee-note li {
+            margin-bottom: 5px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 98%;
+                padding: 15px 10px;
+            }
+            
+            .calculator-box {
+                padding: 12px 10px;
+            }
+            
+            .input-wrapper input, 
+            .input-wrapper select {
+                font-size: 16px;
+                padding: 14px 10px;
+            }
+            
+            button {
+                padding: 14px;
+                font-size: 16px;
+            }
+            
+            .result-highlight-value {
+                font-size: 20px;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <title>주식 수익율 계산기 </title>
-        <div class="input-container">
-            <div style="margin-bottom: 15px;">
-                <label class="embossed-text">📊 증권 종류</label>
-                <select id="sc-market-type" class="embossed-text">
-                    <option value="kospi">코스피</option>
-                    <option value="kosdaq">코스닥</option>
-                </select>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label class="embossed-text">💰 평균 매수가</label>
-                <input id="sc-buy-price" type="text" placeholder="평균 매수가 입력" class="embossed-text">
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label class="embossed-text">🔢 주식 보유량</label>
-                <input id="sc-quantity" type="text" placeholder="보유 수량 입력" class="embossed-text">
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label class="embossed-text">📈 현재가</label>
-                <input id="sc-current-price" type="text" placeholder="현재 주가 입력" class="embossed-text">
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label class="embossed-text">🏦 증권사 선택</label>
-                <select id="sc-broker" class="embossed-text" onchange="updateCommission()">
-                    <option value="direct">직접 입력</option>
-                    <option value="0.01">NH투자증권 (나무증권) - 0.01%</option>
-                    <option value="0.014">한국투자증권 - 0.014%</option>
-                    <option value="0.014">신한투자증권 - 0.014%</option>
-                    <option value="0.014">대신증권 - 0.014%</option>
-                    <option value="0.015">키움증권 - 0.015%</option>
-                    <option value="0.015">미래에셋증권 - 0.015%</option>
-                    <option value="0.015">KB증권 - 0.015%</option>
-                    <option value="0.015">유안타증권 - 0.015%</option>
-                    <option value="0.015">하이투자증권 - 0.015%</option>
-                    <option value="0.015">토스증권 - 0.015%</option>
-                    <option value="0.015">카카오페이증권 - 0.015%</option>
-                    <option value="0.147">삼성증권 - 0.147%</option>
-                </select>
-            </div>
-            
-            <div id="sc-commission-group" style="margin-bottom: 15px;">
-                <label class="embossed-text">📊 수수료 직접 입력</label>
-                <input id="sc-commission" type="number" step="0.001" placeholder="수수료율 입력" class="embossed-text">
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1>주식 수익률 계산기 📈</h1>
         </div>
-<div>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203"
-     crossorigin="anonymous"></script>
-<!-- 주식수익율계산기 -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:728px;height:90px"
-     data-ad-client="ca-pub-1274782176645203"
-     data-ad-slot="7615464233"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-</div>
-
-        <button id="sc-calc-btn" class="btn">계산하기</button>
-
-        <div id="sc-result">
-            <div class="result-section">
-                <div style="font-size: 14px; color: #4a4a4a; margin-bottom: 10px; font-weight: bold;" class="embossed-text">투자 정보</div>
-                <div style="display: flex; justify-content: space-between;">
-                    <div style="text-align: center; flex: 1;">
-                        <div class="embossed-text" style="font-size: 13px; margin-bottom: 5px;">매수가</div>
-                        <div id="sc-res-buy-price" class="embossed-text" style="font-weight: bold;"></div>
+        
+        <div class="tabs">
+            <div id="calculator-tab" class="tab-btn active">계산기</div>
+            <div id="fee-info-tab" class="tab-btn">수수료 정보</div>
+        </div>
+        
+        <!-- 계산기 섹션 -->
+        <div id="calculator-section" class="tab-content active">
+            <div class="calculator-box">
+                <div class="input-group">
+                    <label>💰 매수 가격</label>
+                    <div class="input-wrapper">
+                        <input id="buy-price" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="주당 매수 가격 입력">
+                        <span class="unit">원</span>
                     </div>
-                    <div style="text-align: center; flex: 1;">
-                        <div class="embossed-text" style="font-size: 13px; margin-bottom: 5px;">보유량</div>
-                        <div id="sc-res-quantity" class="embossed-text" style="font-weight: bold;"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label>🔢 보유 수량</label>
+                    <div class="input-wrapper">
+                        <input id="quantity" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="주식 수량 입력">
+                        <span class="unit">주</span>
                     </div>
-                    <div style="text-align: center; flex: 1;">
-                        <div class="embossed-text" style="font-size: 13px; margin-bottom: 5px;">현재가</div>
-                        <div id="sc-res-current-price" class="embossed-text" style="font-weight: bold;"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label>💸 매도 가격</label>
+                    <div class="input-wrapper">
+                        <input id="sell-price" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="주당 매도 가격 입력">
+                        <span class="unit">원</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>🏢 증권사 선택</label>
+                    <div class="input-wrapper">
+                        <select id="broker">
+                            <option value="0.015">키움증권</option>
+                            <option value="0.015">삼성증권</option>
+                            <option value="0.014">미래에셋증권</option>
+                            <option value="0.015">한국투자증권</option>
+                            <option value="0.016">NH투자증권</option>
+                            <option value="0.015">KB증권</option>
+                            <option value="0.015">신한금융투자</option>
+                            <option value="custom">직접 입력</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="custom-fee-container" class="input-group" style="display: none;">
+                    <label>🔣 커스텀 수수료율 (%)</label>
+                    <div class="input-wrapper">
+                        <input id="custom-fee" type="number" step="0.001" inputmode="decimal" placeholder="수수료율 직접 입력 (ex: 0.015)">
+                        <span class="unit">%</span>
                     </div>
                 </div>
             </div>
-
-            <div class="result-section">
-                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">매수 금액</div>
-                <div id="sc-res-buy-amount" class="embossed-text" style="font-size: 20px; font-weight: bold;"></div>
+            
+            <!-- 광고 영역 1 -->
+            <div class="ad-container" style="height: 280px;">
+                <div style="max-width: 100%; height: 250px; overflow: hidden; position: relative;">
+                    <!-- 광고 코드 삽입 위치 --> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-1274782176645203"
+     data-ad-slot="1677078249"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+                </div>
             </div>
-
-            <div class="result-section">
-                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">매도 금액</div>
-                <div id="sc-res-sell-amount" class="embossed-text" style="font-size: 20px; font-weight: bold;"></div>
-            </div>
-
-            <div class="result-section">
-                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">수익률</div>
-                <div id="sc-res-rate" class="embossed-text" style="font-size: 24px; font-weight: bold;"></div>
-            </div>
-
-            <div class="result-section">
-                <div class="embossed-text" style="font-size: 14px; margin-bottom: 10px; font-weight: bold;">수익 금액</div>
-                <div id="sc-res-profit" class="embossed-text" style="font-size: 24px; font-weight: bold;"></div>
-            </div>
-
-<div>
-
-<script src="https://ads-partners.coupang.com/g.js"></script>
+            
+            <button id="calculate-btn" class="calc-btn">계산하기</button>
+            
+            <div id="result" class="result-section">
+                <div class="result-summary">
+                    <div class="result-row">
+                        <div class="result-label">매수금액</div>
+                        <div id="res-buy-total" class="result-value"></div>
+                    </div>
+                    <div class="result-row">
+                        <div class="result-label">매도금액</div>
+                        <div id="res-sell-total" class="result-value"></div>
+                    </div>
+                    <div class="result-row">
+                        <div class="result-label">매수 수수료</div>
+                        <div id="res-buy-fee" class="result-value"></div>
+                    </div>
+                    <div class="result-row">
+                        <div class="result-label">매도 수수료</div>
+                        <div id="res-sell-fee" class="result-value"></div>
+                    </div>
+                </div>
+                
+                <div class="result-highlight">
+                    <div class="result-highlight-label">순수익</div>
+                    <div id="res-profit" class="result-highlight-value"></div>
+                </div>
+                
+                <div class="result-highlight">
+                    <div class="result-highlight-label">수익률</div>
+                    <div id="res-profit-rate" class="result-highlight-value"></div>
+                </div>
+                
+                <!-- 광고 영역 2 -->
+                <div class="ad-container" style="height: 320px;">
+                    <div class="ad-title">✨ 오늘의 특가제품</div>
+                    <div style="max-width: 100%; height: 290px; overflow: hidden; position: relative;">
+                        <!-- 광고 코드 삽입 위치 --><script src="https://ads-partners.coupang.com/g.js"></script>
 <script>
 	new PartnersCoupang.G({"id":632732,"template":"carousel","trackingCode":"AF9512637","width":"100%","height":"250","tsource":""});
 </script>
-
-</div>
-
-
-            <button id="sc-reset-btn" class="btn">다시 계산하기</button>
+                    </div>
+                </div>
+                
+                <button id="reset-btn" class="reset-btn">다시 계산하기</button>
+            </div>
+        </div>
+        
+        <!-- 수수료 정보 섹션 -->
+        <div id="fee-info-section" class="tab-content">
+            <div class="calculator-box">
+                <h3 style="text-align: center; color: #445566; margin-top: 0;">주요 증권사 온라인 수수료 정보</h3>
+                <p style="text-align: center; color: #667788; font-size: 14px; margin-bottom: 20px;">※ 수수료는 증권사 정책에 따라 변경될 수 있습니다. (2025년 3월 기준)</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>증권사</th>
+                                <th style="text-align: center;">매수 수수료</th>
+                                <th style="text-align: center;">매도 수수료</th>
+                                <th style="text-align: center;">기타 정보</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: bold;">키움증권</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center; font-size: 13px; color: #667788;">기본 온라인 주식거래 수수료</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">삼성증권</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center; font-size: 13px; color: #667788;">프리미엄 서비스 이용 시 우대</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">미래에셋증권</td>
+                                <td style="text-align: center;">0.014%</td>
+                                <td style="text-align: center;">0.014%</td>
+                                <td style="text-align: center; font-size: 13px; color: #667788;">거래량에 따라 우대 가능</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">한국투자증권</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center; font-size: 13px; color: #667788;">자산규모에 따라 우대 혜택</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">NH투자증권</td>
+                                <td style="text-align: center;">0.016%</td>
+                                <td style="text-align: center;">0.016%</td>
+                                <td style="text-align: center; font-size: 13px; color: #667788;">NH멤버스 등급별 우대</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">KB증권</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center; font-size: 13px; color: #667788;">스타클럽 회원 우대</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">신한금융투자</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center;">0.015%</td>
+                                <td style="text-align: center; font-size: 13px; color: #667788;">알파 클럽 등급별 우대</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="fee-note">
+                    <h4>📌 수수료 관련 참고사항</h4>
+                    <ul>
+                        <li>상기 수수료율은 일반 계좌 기준이며, 상품별/고객별 우대 프로그램에 따라 차이가 있을 수 있습니다.</li>
+                        <li>대부분의 증권사는 거래량, 자산규모에 따라 수수료 할인 프로그램을 운영하고 있습니다.</li>
+                        <li>증권거래세 0.23%(코스피/코스닥 동일)는 매도 시에만 부과됩니다.</li>
+                        <li>정확한 수수료는 해당 증권사 홈페이지나 고객센터를 통해 확인하는 것을 권장합니다.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 광고 영역 3 -->
+            <div class="ad-container" style="height: 280px;">
+                <div style="max-width: 100%; height: 250px; overflow: hidden; position: relative;">
+                    <!-- 광고 코드 삽입 위치 --> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1274782176645203"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-1274782176645203"
+     data-ad-slot="6805995856"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-    (function(){
-        // 숫자 포맷팅 함수
-        function formatNumber(e){
-            let v=e.value.replace(/[^\d]/g,'');
-            e.value=v?parseInt(v).toLocaleString():'';
-        }
-        
-        // 숫자 추출 함수
-        function extractNumber(v){
-            return v?parseFloat(v.replace(/,/g,'')):0;
-        }
-        
-        // 증권사 선택에 따른 수수료 입력란 표시 여부
-        window.updateCommission = function(){
-            const brokerSelect=document.getElementById('sc-broker');
-            const commissionGroup=document.getElementById('sc-commission-group');
-            const commissionInput=document.getElementById('sc-commission');
+        document.addEventListener('DOMContentLoaded', function() {
+            // 탭 전환 기능
+            const calculatorTab = document.getElementById('calculator-tab');
+            const feeInfoTab = document.getElementById('fee-info-tab');
+            const calculatorSection = document.getElementById('calculator-section');
+            const feeInfoSection = document.getElementById('fee-info-section');
             
-            if(brokerSelect.value==='direct'){
-                commissionGroup.style.display='block';
-            } else {
-                commissionGroup.style.display='none';
-                commissionInput.value=brokerSelect.value;
-            }
-        };
-        
-        // 계산하기 버튼 클릭 이벤트
-        document.getElementById('sc-calc-btn').onclick=function(){
-            const avgBuyPrice=extractNumber(document.getElementById('sc-buy-price').value);
-            const stockQuantity=extractNumber(document.getElementById('sc-quantity').value);
-            const currentPrice=extractNumber(document.getElementById('sc-current-price').value);
-            const commissionRate=parseFloat(document.getElementById('sc-commission').value || document.getElementById('sc-broker').value)/100;
-            
-            // 입력값 검증
-            if(!avgBuyPrice || !stockQuantity || !currentPrice){
-                alert('모든 필드를 입력해주세요.');
-                return;
-            }
-            
-            // 계산
-            const buyAmount=avgBuyPrice*stockQuantity;
-            const sellAmountBeforeFee=currentPrice*stockQuantity;
-            const sellFee=sellAmountBeforeFee*commissionRate;
-            const sellAmount=sellAmountBeforeFee-sellFee;
-            const profitAmount=sellAmount-buyAmount;
-            const profitRate=(profitAmount/buyAmount)*100;
-            
-            // 결과 표시
-            document.getElementById('sc-res-buy-price').textContent=avgBuyPrice.toLocaleString()+'원';
-            document.getElementById('sc-res-quantity').textContent=stockQuantity.toLocaleString()+'주';
-            document.getElementById('sc-res-current-price').textContent=currentPrice.toLocaleString()+'원';
-            document.getElementById('sc-res-buy-amount').textContent=buyAmount.toLocaleString()+'원';
-            document.getElementById('sc-res-sell-amount').textContent=sellAmount.toLocaleString()+'원';
-            
-            const rateElement=document.getElementById('sc-res-rate');
-            rateElement.textContent=profitRate.toFixed(2)+'%';
-            
-            const profitElement=document.getElementById('sc-res-profit');
-            profitElement.textContent=profitAmount.toLocaleString()+'원';
-            
-            // 수익/손실에 따른 색상 적용
-            if(profitAmount>0){
-                rateElement.style.color='#ef4444';
-                profitElement.style.color='#ef4444';
-            } else {
-                rateElement.style.color='#3b82f6';
-                profitElement.style.color='#3b82f6';
-            }
-            
-            // 결과 표시
-            document.getElementById('sc-result').style.display='block';
-            
-            // 결과 영역으로 스크롤
-            window.scrollTo({
-                top: document.getElementById('sc-result').offsetTop-10,
-                behavior: 'smooth'
+            calculatorTab.addEventListener('click', function() {
+                calculatorTab.classList.add('active');
+                feeInfoTab.classList.remove('active');
+                calculatorSection.classList.add('active');
+                feeInfoSection.classList.remove('active');
             });
             
-            // 광고 새로고침 시도
-            try {
-                (adsbygoogle=window.adsbygoogle||[]).push({});
-            } catch(e){
-                console.log('광고 새로고침 오류:',e);
+            feeInfoTab.addEventListener('click', function() {
+                feeInfoTab.classList.add('active');
+                calculatorTab.classList.remove('active');
+                feeInfoSection.classList.add('active');
+                calculatorSection.classList.remove('active');
+            });
+            
+            // 증권사 선택 시 커스텀 수수료 입력란 표시 여부
+            const brokerSelect = document.getElementById('broker');
+            const customFeeContainer = document.getElementById('custom-fee-container');
+            
+            brokerSelect.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customFeeContainer.style.display = 'block';
+                } else {
+                    customFeeContainer.style.display = 'none';
+                }
+            });
+            
+            // 숫자 입력 필드 포맷팅
+            const buyPrice = document.getElementById('buy-price');
+            const quantity = document.getElementById('quantity');
+            const sellPrice = document.getElementById('sell-price');
+            
+            // 숫자 포맷팅 함수
+            function formatNumber(input) {
+                let value = input.value.replace(/[^\d]/g, '');
+                if (value) {
+                    input.value = numberWithCommas(parseInt(value));
+                } else {
+                    input.value = '';
+                }
             }
-        };
-        
-        // 다시 계산하기 버튼 클릭 이벤트
-        document.getElementById('sc-reset-btn').onclick=function(){
-            document.getElementById('sc-buy-price').value='';
-            document.getElementById('sc-quantity').value='';
-            document.getElementById('sc-current-price').value='';
-            document.getElementById('sc-broker').value='direct';
-            document.getElementById('sc-commission').value='';
-            document.getElementById('sc-result').style.display='none';
             
-            // 주식 수량 입력 칸으로 스크롤
-            const quantityInput = document.getElementById('sc-quantity');
-            quantityInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            quantityInput.focus();
+            // 천단위 콤마 추가
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
             
-            // 증권사 선택에 따른 수수료 입력란 상태 업데이트
-            updateCommission();
-        };
-        
-        // 숫자 입력 필드에 포맷팅 이벤트 추가
-        ['sc-buy-price','sc-quantity','sc-current-price'].forEach(i=>
-            document.getElementById(i).addEventListener('input',function(){
-                formatNumber(this);
-            })
-        );
-        
-        // 초기 설정
-        updateCommission();
-    })();
+            // 콤마 제거
+            function removeCommas(str) {
+                return str.replace(/,/g, '');
+            }
+            
+            buyPrice.addEventListener('input', function() { formatNumber(this); });
+            quantity.addEventListener('input', function() { formatNumber(this); });
+            sellPrice.addEventListener('input', function() { formatNumber(this); });
+            
+            // 모바일에서 숫자 키패드 표시를 위한 focus 처리
+            buyPrice.addEventListener('focus', function() {
+                this.setAttribute('inputmode', 'numeric');
+            });
+            
+            quantity.addEventListener('focus', function() {
+                this.setAttribute('inputmode', 'numeric');
+            });
+            
+            sellPrice.addEventListener('focus', function() {
+                this.setAttribute('inputmode', 'numeric');
+            });
+            
+            // 계산하기 버튼
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resultSection = document.getElementById('result');
+            
+            calculateBtn.addEventListener('click', function() {
+                // 입력값 검증
+                const buyPriceVal = parseInt(removeCommas(buyPrice.value)) || 0;
+                const quantityVal = parseInt(removeCommas(quantity.value)) || 0;
+                const sellPriceVal = parseInt(removeCommas(sellPrice.value)) || 0;
+                
+                if (buyPriceVal <= 0 || quantityVal <= 0 || sellPriceVal <= 0) {
+                    alert('모든 값을 올바르게 입력해주세요.');
+                    return;
+                }
+                
+                // 수수료율 설정
+                let feeRate;
+                if (brokerSelect.value === 'custom') {
+                    const customFeeVal = parseFloat(document.getElementById('custom-fee').value);
+                    if (isNaN(customFeeVal) || customFeeVal <= 0) {
+                        alert('올바른 수수료율을 입력해주세요.');
+                        return;
+                    }
+                    feeRate = customFeeVal / 100;
+                } else {
+                    feeRate = parseFloat(brokerSelect.value) / 100;
+                }
+                
+                // 계산
+                const buyTotal = buyPriceVal * quantityVal;
+                const sellTotal = sellPriceVal * quantityVal;
+                
+                const buyFee = Math.round(buyTotal * feeRate);
+                const sellFee = Math.round(sellTotal * feeRate);
+                
+                // 매도 시 증권거래세 (0.23%) 적용
+                const taxRate = 0.0023;
+                const tax = Math.round(sellTotal * taxRate);
+                
+                // 순수익 계산
+                const profit = sellTotal - sellFee - tax - buyTotal - buyFee;
+                
+                // 수익률 계산 (%)
+                const profitRate = (profit / (buyTotal + buyFee)) * 100;
+                
+                // 결과 표시
+                document.getElementById('res-buy-total').textContent = numberWithCommas(buyTotal) + '원';
+                document.getElementById('res-sell-total').textContent = numberWithCommas(sellTotal) + '원';
+                document.getElementById('res-buy-fee').textContent = numberWithCommas(buyFee) + '원';
+                document.getElementById('res-sell-fee').textContent = numberWithCommas(sellFee + tax) + '원 (세금 포함)';
+                
+                const profitElement = document.getElementById('res-profit');
+                const profitRateElement = document.getElementById('res-profit-rate');
+                
+                profitElement.textContent = numberWithCommas(profit) + '원';
+                profitRateElement.textContent = profitRate.toFixed(2) + '%';
+                
+                // 수익/손실에 따른 색상 변경
+                if (profit > 0) {
+                    profitElement.style.color = '#d14836'; // 빨간색 (수익)
+                    profitRateElement.style.color = '#d14836';
+                } else if (profit < 0) {
+                    profitElement.style.color = '#4285f4'; // 파란색 (손실)
+                    profitRateElement.style.color = '#4285f4';
+                } else {
+                    profitElement.style.color = '#333'; // 검정색 (변동 없음)
+                    profitRateElement.style.color = '#333';
+                }
+                
+                // 결과 섹션 표시
+                resultSection.style.display = 'block';
+                
+                // 결과로 스크롤
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            
+            // 다시 계산하기 버튼
+            const resetBtn = document.getElementById('reset-btn');
+            
+            resetBtn.addEventListener('click', function() {
+                buyPrice.value = '';
+                quantity.value = '';
+                sellPrice.value = '';
+                brokerSelect.value = '0.015'; // 키움증권으로 초기화
+                document.getElementById('custom-fee').value = '';
+                customFeeContainer.style.display = 'none';
+                resultSection.style.display = 'none';
+                
+                // 매수 가격 필드로 포커스
+                buyPrice.focus();
+                
+                // 상단으로 스크롤
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
     </script>
 </body>
 </html>
